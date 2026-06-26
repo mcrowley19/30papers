@@ -1,0 +1,124 @@
+@import "@fontsource/newsreader/400.css";
+@import "@fontsource/newsreader/500.css";
+@import "@fontsource/newsreader/600.css";
+@import "@fontsource/newsreader/400-italic.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+/* Geist (sans + mono): the high-tech, modern wordmark typeface. */
+@import "@fontsource/geist/400.css";
+@import "@fontsource/geist/500.css";
+@import "@fontsource/geist/600.css";
+@import "@fontsource/geist/700.css";
+@import "@fontsource/geist-mono/500.css";
+@import "@fontsource/geist-mono/600.css";
+/* CMU Serif = Computer Modern, the typeface arXiv/LaTeX papers are set in. */
+@import "computer-modern/cmu-serif.css";
+@import "katex/dist/katex.min.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans;
+  }
+
+  ::selection {
+    background: theme("colors.accent.soft");
+    color: theme("colors.accent.ink");
+  }
+}
+
+@layer components {
+  /* Long-form paper body typography. Applied to ingested HTML. */
+  .prose-paper {
+    @apply font-serif text-[1.075rem] leading-[1.75] text-ink;
+  }
+  .prose-paper p {
+    @apply my-5;
+  }
+  .prose-paper h1,
+  .prose-paper h2,
+  .prose-paper h3 {
+    @apply font-serif font-semibold text-ink mt-12 mb-4 leading-tight;
+  }
+  .prose-paper h1 {
+    @apply text-3xl;
+  }
+  .prose-paper h2 {
+    @apply text-2xl;
+  }
+  .prose-paper h3 {
+    @apply text-xl;
+  }
+  .prose-paper a {
+    @apply text-accent underline decoration-rule underline-offset-2 hover:decoration-accent;
+  }
+  .prose-paper figure {
+    @apply my-8;
+  }
+  .prose-paper figure img {
+    @apply mx-auto max-w-full;
+  }
+  .prose-paper figcaption {
+    @apply mt-3 text-center text-sm text-muted font-sans;
+  }
+  .prose-paper ul {
+    @apply my-5 list-disc pl-6;
+  }
+  .prose-paper ol {
+    @apply my-5 list-decimal pl-6;
+  }
+  .prose-paper li {
+    @apply my-2;
+  }
+  .prose-paper blockquote {
+    @apply border-l-2 border-rule pl-5 italic text-muted my-6;
+  }
+  .prose-paper table {
+    @apply my-6 w-full border-collapse text-[0.95rem] font-sans;
+  }
+  .prose-paper th,
+  .prose-paper td {
+    @apply border border-rule px-3 py-2 text-left;
+  }
+  .prose-paper code {
+    @apply font-mono text-[0.9em] bg-rule/40 rounded px-1 py-0.5;
+  }
+  .prose-paper pre {
+    @apply my-6 overflow-x-auto rounded-md bg-ink p-4 text-sm text-paper;
+  }
+  .prose-paper pre code {
+    @apply bg-transparent p-0 text-paper;
+  }
+}
+
+/* Streaming-token caret: a solid block that rides the end of generated text. */
+.token-caret {
+  display: inline-block;
+  width: 0.5ch;
+  height: 0.86em;
+  margin-left: 0.06em;
+  vertical-align: -0.08em;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+/* Respect users who prefer no motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
