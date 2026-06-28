@@ -7,9 +7,9 @@ import PaperRow from "./PaperRow";
  */
 export default function PaperGrid() {
   return (
-    <section className="bg-[#f3f0ea] text-[#1a1916]">
+    <section className="bg-paper text-ink">
       <div className="mx-auto max-w-3xl px-6 py-16 sm:py-24">
-        <div className="divide-y divide-[#ddd7cc]">
+        <div className="divide-y divide-rule">
           {papers.map((paper) => (
             <PaperRow key={paper.slug} paper={paper} />
           ))}

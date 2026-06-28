@@ -4,16 +4,36 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Editorial palette. Pure white page, near-black ink, one restrained
-        // warm accent. Deliberately NOT purple / navy+gold.
-        ink: "#141414",
-        paper: "#ffffff",
-        muted: "#6b6b6b",
-        rule: "#e7e4df",
+        // The monograph palette. A dark warm cover, a warm off-white "paper"
+        // body, and a single warm sienna accent. Deliberately NOT purple /
+        // navy+gold. One source of truth for both the cover and the body.
+        //
+        // Cover (the dark hero ground) and its two foreground tints.
+        cover: {
+          DEFAULT: "#0e0e0d", // deep warm ink
+          fg: "#f5f3ee", // paper-white title
+          soft: "#d8d6cf", // subtitle on the cover
+        },
+        // Body "paper": warm off-white, with a slightly deeper raised surface
+        // for thumbnails and insets.
+        paper: {
+          DEFAULT: "#f3f0ea",
+          raised: "#efece6",
+        },
+        // Ink, from primary text down to faint hairline separators.
+        ink: {
+          DEFAULT: "#1a1916",
+          soft: "#43403a", // blurbs / secondary prose
+        },
+        muted: "#6f6a60", // mono author/year, captions
+        faint: "#c8c1b4", // in-text separators
+        rule: "#ddd7cc", // hairline rules between rows
+        // The single warm accent, with a deeper pressed/hover tone.
         accent: {
-          DEFAULT: "#3a3a3a", // restrained dark neutral (no red)
+          DEFAULT: "#a45a32", // sienna
+          deep: "#7e3f1e", // hover / pressed
+          ink: "#7e3f1e", // alias kept for detail-page links
           soft: "#eeeae5",
-          ink: "#1f1f1f",
         },
       },
       fontFamily: {

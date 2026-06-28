@@ -40,7 +40,10 @@ export default function CoverFigure({ className }: { className?: string }) {
       const n = 17;
       const margin = Math.min(w * 0.16, 220);
       const span = w - margin * 2;
-      const baseY = h * 0.6;
+      // Anchor the figure in the upper region: the baseline sits just above the
+      // centred title so the arcs arch over the masthead, never reaching the
+      // subtitle that sits below the centre line.
+      const baseY = h * 0.38;
       const xs: number[] = [];
       for (let i = 0; i < n; i++) xs.push(margin + (span * i) / (n - 1));
 
@@ -55,7 +58,7 @@ export default function CoverFigure({ className }: { className?: string }) {
         const wgt = Math.exp(-(d * d) / (2 * sigma * sigma));
         if (wgt < 0.015) continue;
         const x = xs[i];
-        const lift = Math.min(h * 0.34, 60 + Math.abs(x - qx) * 0.42);
+        const lift = Math.min(h * 0.3, 60 + Math.abs(x - qx) * 0.42);
         ctx.beginPath();
         ctx.moveTo(qx, baseY);
         ctx.bezierCurveTo(qx, baseY - lift, x, baseY - lift, x, baseY);

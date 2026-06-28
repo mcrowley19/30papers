@@ -68,9 +68,21 @@ noise (explicitly rejected) and never photos.
       attention, scale), then a hairline-ruled colophon note (the Computer Modern
       homage + line-art figures) beside a small `LineFigure`. Bridges the dark
       cover into the light list. Thematic dividers left optional/deferred.
-- [ ] 5. Palette + type tokens in `tailwind.config.js` (cover ink, warm paper,
+- [x] 5. Palette + type tokens in `tailwind.config.js` (cover ink, warm paper,
       accent); apply consistently. Refine hero so arcs never sit under the
       subtitle text.
+      DONE: replaced the stale pure-white/neutral tokens with the real monograph
+      palette in `tailwind.config.js` — `cover` (`#0e0e0d` + `fg`/`soft`),
+      `paper` (`#f3f0ea` + `raised`), `ink` (`#1a1916` + `soft`), `muted`,
+      `faint`, `rule`, and `accent` (sienna `#a45a32` + `deep`; kept `accent.ink`
+      alias so detail-page links still resolve). Swapped every hard-coded hex in
+      `Hero`, `Colophon`, `PaperRow`, `PaperGrid` for these tokens and replaced
+      the inline `CM`/`MONO` font styles with `font-serif`/`font-techmono`
+      classes. This also unifies the detail pages onto the same warm palette.
+      Refined the hero: `CoverFigure` baseline moved to `0.38h` with a lower arc
+      cap so the attention arcs arch above the masthead, and the vignette is
+      recentred to `50% 34%` so the lower half stays clean and the subtitle never
+      reads over the arcs.
 - [ ] 6. Motion + interaction: scroll fade-ups (there is an `animate-fade-up`
       keyframe and `src/lib/useInView.ts`), hover states, full reduced-motion
       support.

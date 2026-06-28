@@ -7,13 +7,15 @@ const CM = '"CMU Serif", "Newsreader", Georgia, serif';
 
 export default function Hero() {
   return (
-    <header className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#0e0e0d] px-6 text-center">
-      {/* The figure of attention, drawn as thin line art behind the title. */}
+    <header className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-cover px-6 text-center">
+      {/* The figure of attention, drawn as thin line art above the title. */}
       <CoverFigure className="pointer-events-none absolute inset-0 h-full w-full opacity-90" />
+      {/* Vignette focused on the upper figure; the lower half stays clean so the
+          subtitle never reads over the arcs. */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
-          background: "radial-gradient(120% 80% at 50% 46%, rgba(14,14,13,0) 30%, rgba(14,14,13,0.86) 100%)",
+          background: "radial-gradient(120% 78% at 50% 34%, rgba(14,14,13,0) 26%, rgba(14,14,13,0.9) 92%)",
         }}
       />
 
@@ -36,8 +38,8 @@ export default function Hero() {
         />
 
         <p
-          style={{ fontFamily: CM, color: "#d8d6cf" }}
-          className="mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl"
+          style={{ fontFamily: CM }}
+          className="mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed text-cover-soft sm:text-xl"
         >
           The reading list Ilya Sutskever gave John Carmack, said to carry ninety percent of what matters in modern deep
           learning.
