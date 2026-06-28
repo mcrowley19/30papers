@@ -13,8 +13,7 @@ export default function Hero() {
       <div
         className="pointer-events-none absolute inset-0"
         style={{
-          background:
-            "radial-gradient(120% 80% at 50% 46%, rgba(14,14,13,0) 30%, rgba(14,14,13,0.86) 100%)",
+          background: "radial-gradient(120% 80% at 50% 46%, rgba(14,14,13,0) 30%, rgba(14,14,13,0.86) 100%)",
         }}
       />
 
@@ -31,8 +30,7 @@ export default function Hero() {
                 color: "#f5f3ee",
                 textShadow: "0 2px 50px rgba(0,0,0,0.6)",
               },
-              className:
-                "leading-[1.0] tracking-[-0.015em] text-[19vw] sm:text-[6.5rem] md:text-[8rem]",
+              className: "leading-[1.0] tracking-[-0.015em] text-[19vw] sm:text-[6.5rem] md:text-[8rem]",
             },
           ]}
         />
@@ -41,15 +39,8 @@ export default function Hero() {
           style={{ fontFamily: CM, color: "#d8d6cf" }}
           className="mx-auto mt-8 max-w-xl text-pretty text-lg leading-relaxed sm:text-xl"
         >
-          The reading list Ilya Sutskever gave John Carmack, said to carry
-          ninety percent of what matters in modern deep learning.
-        </p>
-
-        <p
-          style={{ fontFamily: '"Geist Mono", ui-monospace, monospace' }}
-          className="mx-auto mt-7 text-xs font-medium uppercase text-[#8a877e]"
-        >
-          Twenty-seven works, hosted in full
+          The reading list Ilya Sutskever gave John Carmack, said to carry ninety percent of what matters in modern deep
+          learning.
         </p>
       </div>
     </header>
