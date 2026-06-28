@@ -109,8 +109,20 @@ noise (explicitly rejected) and never photos.
       instead of widening the page. Also swapped the leftover hard-coded
       `bg-[#f3f0ea]` on `Home` for the `bg-paper` token. The PaperRow grid and
       TermPanel were already full-width-safe on mobile.
-- [ ] 8. Final QA: `npm run build` (tsc + vite) clean, `npm run check:emdash`
+- [x] 8. Final QA: `npm run build` (tsc + vite) clean, `npm run check:emdash`
       clean, a11y (alt/aria/contrast), and a visual review.
+      DONE: confirmed `npx tsc --noEmit`, `npm run build`, and
+      `npm run check:emdash` all clean. a11y audit of the landing flow:
+      thumbnail images are decorative (`alt=""`) inside `aria-label`ed paper
+      links; `LineFigure` glyphs carry `role="img"` + label or are
+      `aria-hidden`; the `CoverFigure` canvas and decorative SVGs are
+      `aria-hidden`; the masthead is a labeled `TokenStream` h1. Contrast over
+      warm paper clears WCAG AA (ink `#1a1916`, ink-soft `#43403a`, and even the
+      lightest body text `muted #6f6a60` at ~4.7:1); `faint` is used only for
+      decorative separators. Cleanup: removed the orphaned old
+      `src/components/PaperCard.tsx` (the superseded hover-tab card, imported
+      nowhere) so the component tree matches the shipped monograph design.
+      The redesign checklist is now complete.
 
 ## How to verify each iteration (cloud-safe)
 - Always run `npx tsc --noEmit` and fix all type errors before committing.
