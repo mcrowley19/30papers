@@ -1,12 +1,20 @@
 import { papers } from "../data/papers";
-import PaperSection from "./PaperSection";
+import PaperRow from "./PaperRow";
 
+/**
+ * The reading list, set as a quiet column of typeset specimen rows on warm
+ * paper. The thumbnails are kept; everything else is drawn or typeset.
+ */
 export default function PaperGrid() {
   return (
-    <div>
-      {papers.map((paper, i) => (
-        <PaperSection key={paper.slug} paper={paper} index={i} />
-      ))}
-    </div>
+    <section className="bg-[#f3f0ea] text-[#1a1916]">
+      <div className="mx-auto max-w-3xl px-6 py-16 sm:py-24">
+        <div className="divide-y divide-[#ddd7cc]">
+          {papers.map((paper) => (
+            <PaperRow key={paper.slug} paper={paper} />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

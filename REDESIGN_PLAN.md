@@ -51,9 +51,15 @@ noise (explicitly rejected) and never photos.
       compression) in `currentColor` with hairline `non-scaling-stroke`. Old
       dotty `motifs.ts`/`MotifCanvas` left in place; item 3 swaps the paper list
       onto `LineFigure` and removes them.
-- [ ] 3. Redesign the paper list (keep `public/thumbnails`): elegant typeset rows
+- [x] 3. Redesign the paper list (keep `public/thumbnails`): elegant typeset rows
       — serif title, mono author/year, blurb, per-paper line glyph, generous
       rhythm. Replace `PaperSection`/`PaperGrid`. Tasteful, not 27 full screens.
+      DONE: new `src/components/PaperRow.tsx` sets each paper as a specimen row on
+      warm paper (`#f3f0ea`): kept thumbnail left, CMU Serif title, Geist Mono
+      author/year, serif blurb, a small per-paper `LineFigure` glyph in a warm
+      sienna accent (`#a45a32`), with a "Read" link. `PaperGrid` is now a calm
+      max-w-3xl column with hairline `#ddd7cc` rules between rows; `Home` body is
+      light. Removed the old `PaperSection`, `MotifCanvas`, and dotty `motifs.ts`.
 - [ ] 4. Page structure: short intro/colophon under the hero; optional thematic
       dividers (Compression / Vision / Sequences / Attention / Scale) in line-art.
 - [ ] 5. Palette + type tokens in `tailwind.config.js` (cover ink, warm paper,
