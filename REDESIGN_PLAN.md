@@ -41,10 +41,16 @@ noise (explicitly rejected) and never photos.
 
 ## Iteration checklist (tick the box you complete, commit, then stop)
 - [x] 1. Cover hero: CoverFigure line-art + Computer Modern + token-stream.
-- [ ] 2. Line-art figure system: a `LineFigure` component + ~6 figure fns
+- [x] 2. Line-art figure system: a `LineFigure` component + ~6 figure fns
       (attention, residual, recurrence, message-passing graph, scaling-law,
       memory-tape), crisp 1px strokes; map each paper slug to one (replace the
       `motifFor` map in `src/lib/motifs.ts`).
+      DONE: added `src/lib/figures.ts` (`FigureKey` + `figureForSlug`/`figureFor`,
+      all 27 slugs mapped) and `src/components/LineFigure.tsx` rendering 8 crisp
+      SVG figures (attention, residual, recurrence, graph, scaling, memory, conv,
+      compression) in `currentColor` with hairline `non-scaling-stroke`. Old
+      dotty `motifs.ts`/`MotifCanvas` left in place; item 3 swaps the paper list
+      onto `LineFigure` and removes them.
 - [ ] 3. Redesign the paper list (keep `public/thumbnails`): elegant typeset rows
       — serif title, mono author/year, blurb, per-paper line glyph, generous
       rhythm. Replace `PaperSection`/`PaperGrid`. Tasteful, not 27 full screens.
