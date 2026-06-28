@@ -20,7 +20,7 @@ export default function PaperRow({ paper }: { paper: Paper }) {
         aria-label={`${paper.title}. ${paper.blurb}`}
         className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
       >
-        <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[2px] bg-paper-raised shadow-[0_14px_34px_-22px_rgba(20,18,14,0.7)] ring-1 ring-ink/10 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1">
+        <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[2px] bg-paper-raised shadow-[0_14px_34px_-22px_rgba(20,18,14,0.7)] ring-1 ring-ink/10 transition duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1 group-hover:shadow-[0_22px_46px_-22px_rgba(20,18,14,0.78)]">
           {!imgFailed ? (
             <img
               src={`/thumbnails/${paper.slug}.png`}

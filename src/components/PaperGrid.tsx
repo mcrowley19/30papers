@@ -1,5 +1,6 @@
 import { papers } from "../data/papers";
 import PaperRow from "./PaperRow";
+import Reveal from "./Reveal";
 
 /**
  * The reading list, set as a quiet column of typeset specimen rows on warm
@@ -11,7 +12,9 @@ export default function PaperGrid() {
       <div className="mx-auto max-w-3xl px-6 py-16 sm:py-24">
         <div className="divide-y divide-rule">
           {papers.map((paper) => (
-            <PaperRow key={paper.slug} paper={paper} />
+            <Reveal key={paper.slug}>
+              <PaperRow paper={paper} />
+            </Reveal>
           ))}
         </div>
       </div>

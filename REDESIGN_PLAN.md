@@ -83,9 +83,20 @@ noise (explicitly rejected) and never photos.
       cap so the attention arcs arch above the masthead, and the vignette is
       recentred to `50% 34%` so the lower half stays clean and the subtitle never
       reads over the arcs.
-- [ ] 6. Motion + interaction: scroll fade-ups (there is an `animate-fade-up`
+- [x] 6. Motion + interaction: scroll fade-ups (there is an `animate-fade-up`
       keyframe and `src/lib/useInView.ts`), hover states, full reduced-motion
       support.
+      DONE: wired the unused `animate-fade-up` + `useInView` into a new
+      `src/components/Reveal.tsx` that fades/rises blocks the first time they
+      scroll into view (the `opacity-0` base sits under the animation so an
+      optional `delay` holds it hidden instead of flashing). Each `PaperRow` now
+      reveals on scroll and the `Colophon` reveals its kicker/intro/note in a
+      gentle 0/90/180ms stagger. Added `usePrefersReducedMotion` and taught
+      `useInView` to report in-view immediately under reduced motion; `Reveal`
+      then renders the settled state with no entrance animation at all (belt and
+      braces over the global reduced-motion CSS). Hover: thumbnail now deepens
+      its shadow as it lifts (eased `transition` covering transform + shadow);
+      title-colour and Read-arrow hovers already in place.
 - [ ] 7. Responsive pass: mobile + desktop, `object-fit` on thumbnails, no
       horizontal scroll.
 - [ ] 8. Final QA: `npm run build` (tsc + vite) clean, `npm run check:emdash`
