@@ -97,8 +97,18 @@ noise (explicitly rejected) and never photos.
       braces over the global reduced-motion CSS). Hover: thumbnail now deepens
       its shadow as it lifts (eased `transition` covering transform + shadow);
       title-colour and Read-arrow hovers already in place.
-- [ ] 7. Responsive pass: mobile + desktop, `object-fit` on thumbnails, no
+- [x] 7. Responsive pass: mobile + desktop, `object-fit` on thumbnails, no
       horizontal scroll.
+      DONE: audited the landing flow for narrow viewports. Thumbnails already
+      use `object-cover object-top` and the masthead fits within the viewport,
+      so the real horizontal-scroll risks were on the detail pages: wide
+      ingested tables and long KaTeX display equations had no overflow
+      containment. Made `.prose-paper table` `block`/`overflow-x-auto` so wide
+      tables scroll inside their column, gave `.katex-display` the same
+      treatment, and added `overflow-wrap: break-word` so long URLs/tokens wrap
+      instead of widening the page. Also swapped the leftover hard-coded
+      `bg-[#f3f0ea]` on `Home` for the `bg-paper` token. The PaperRow grid and
+      TermPanel were already full-width-safe on mobile.
 - [ ] 8. Final QA: `npm run build` (tsc + vite) clean, `npm run check:emdash`
       clean, a11y (alt/aria/contrast), and a visual review.
 

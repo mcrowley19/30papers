@@ -40,6 +40,8 @@
   /* Long-form paper body typography. Applied to ingested HTML. */
   .prose-paper {
     @apply font-serif text-[1.075rem] leading-[1.75] text-ink;
+    /* Long URLs and unbreakable tokens wrap instead of widening the page. */
+    overflow-wrap: break-word;
   }
   .prose-paper p {
     @apply my-5;
@@ -82,8 +84,10 @@
   .prose-paper blockquote {
     @apply border-l-2 border-rule pl-5 italic text-muted my-6;
   }
+  /* Wide tables scroll inside their column rather than widening the page on
+     narrow screens. `block` lets the overflow take effect on the table itself. */
   .prose-paper table {
-    @apply my-6 w-full border-collapse text-[0.95rem] font-sans;
+    @apply my-6 block max-w-full overflow-x-auto border-collapse text-[0.95rem] font-sans;
   }
   .prose-paper th,
   .prose-paper td {
@@ -97,6 +101,12 @@
   }
   .prose-paper pre code {
     @apply bg-transparent p-0 text-paper;
+  }
+  /* Long display equations scroll within the column instead of forcing a
+     page-wide horizontal scrollbar on small screens. */
+  .prose-paper .katex-display {
+    @apply overflow-x-auto overflow-y-hidden;
+    padding-bottom: 0.25rem;
   }
 }
 
