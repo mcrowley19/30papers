@@ -60,8 +60,14 @@ noise (explicitly rejected) and never photos.
       sienna accent (`#a45a32`), with a "Read" link. `PaperGrid` is now a calm
       max-w-3xl column with hairline `#ddd7cc` rules between rows; `Home` body is
       light. Removed the old `PaperSection`, `MotifCanvas`, and dotty `motifs.ts`.
-- [ ] 4. Page structure: short intro/colophon under the hero; optional thematic
+- [x] 4. Page structure: short intro/colophon under the hero; optional thematic
       dividers (Compression / Vision / Sequences / Attention / Scale) in line-art.
+      DONE: new `src/components/Colophon.tsx` sits between `Hero` and `PaperGrid`
+      on the warm paper. A mono sienna kicker ("The reading list"), a CMU Serif
+      intro naming the threads (compression/complexity, vision, recurrence,
+      attention, scale), then a hairline-ruled colophon note (the Computer Modern
+      homage + line-art figures) beside a small `LineFigure`. Bridges the dark
+      cover into the light list. Thematic dividers left optional/deferred.
 - [ ] 5. Palette + type tokens in `tailwind.config.js` (cover ink, warm paper,
       accent); apply consistently. Refine hero so arcs never sit under the
       subtitle text.
