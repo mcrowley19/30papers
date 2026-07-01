@@ -1,23 +1,16 @@
-import { papers } from "../data/papers";
+import { papers as allPapers, type Paper } from "../data/papers";
 import PaperRow from "./PaperRow";
-import Reveal from "./Reveal";
 
 /**
- * The reading list, set as a quiet column of typeset specimen rows on warm
- * paper. The thumbnails are kept; everything else is drawn or typeset.
+ * The reading list: a plain column of paper thumbnails going down the page.
  */
-export default function PaperGrid() {
+export default function PaperGrid({ items }: { items?: Paper[] }) {
+  const papers = items ?? allPapers;
   return (
-    <section className="bg-paper text-ink">
-      <div className="mx-auto max-w-3xl px-6 py-16 sm:py-24">
-        <div className="divide-y divide-rule">
-          {papers.map((paper) => (
-            <Reveal key={paper.slug}>
-              <PaperRow paper={paper} />
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
+    <div className="mt-12">
+      {papers.map((paper) => (
+        <PaperRow key={paper.slug} paper={paper} />
+      ))}
+    </div>
   );
 }

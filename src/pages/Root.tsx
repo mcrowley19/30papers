@@ -5,7 +5,7 @@ import TermPanel from "../components/TermPanel";
 export default function Root() {
   return (
     <TermPanelProvider>
-      <div className="min-h-screen bg-paper">
+      <div className="min-h-screen bg-white">
         <Outlet />
       </div>
       <TermPanel />

@@ -24,10 +24,11 @@
   html {
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    background: #fff;
   }
 
   body {
-    @apply bg-paper text-ink font-sans;
+    @apply bg-white text-ink font-sans;
   }
 
   ::selection {
