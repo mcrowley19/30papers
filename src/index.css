@@ -14,7 +14,7 @@
 @import "@fontsource/geist-mono/600.css";
 /* CMU Serif = Computer Modern, the typeface arXiv/LaTeX papers are set in.
    Typewriter + Sans cover LaTeX's \texttt and \textsf inside paper bodies. */
-@import "computer-modern/cmu-serif.css";
+@import "./styles/cmu-serif.css";
 @import "computer-modern/cmu-typewriter-text.css";
 @import "computer-modern/cmu-sans-serif.css";
 @import "katex/dist/katex.min.css";

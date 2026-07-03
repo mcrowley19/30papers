@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Ingestion pipeline. Pulls each paper's full text into src/content/papers/<slug>.html,
 // self-hosts its images under public/figures/<slug>/, and renders a first-page
-// thumbnail into public/thumbnails/<slug>.png where a PDF is available.
+// thumbnail into public/thumbnails/<slug>.webp where a PDF is available.
 //
 // Usage:
 //   node scripts/fetch-papers.mjs                 # all papers, skip existing

@@ -1,0 +1,41 @@
+/*
+ * Vendored from computer-modern/cmu-serif.css, with `font-display: swap` added.
+ *
+ * The package ships these faces with the default `font-display: auto`, which
+ * makes the browser hide all serif text (FOIT) for up to 3s while the ~220KB
+ * CMU Serif woff2 downloads. Since `font-serif` lists "CMU Serif" first, that
+ * left the landing page's paper descriptions blank on first load. `swap` lets
+ * the text paint immediately in the Newsreader/Georgia fallback and swap to
+ * CMU Serif once it arrives.
+ */
+@font-face {
+  font-family: "CMU Serif";
+  font-style: roman;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../../node_modules/computer-modern/fonts/cmu-serif-500-roman.woff2") format("woff2"), url("../../node_modules/computer-modern/fonts/cmu-serif-500-roman.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "CMU Serif";
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../../node_modules/computer-modern/fonts/cmu-serif-500-italic.woff2") format("woff2"), url("../../node_modules/computer-modern/fonts/cmu-serif-500-italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "CMU Serif";
+  font-style: roman;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../../node_modules/computer-modern/fonts/cmu-serif-700-roman.woff2") format("woff2"), url("../../node_modules/computer-modern/fonts/cmu-serif-700-roman.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "CMU Serif";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../../node_modules/computer-modern/fonts/cmu-serif-700-italic.woff2") format("woff2"), url("../../node_modules/computer-modern/fonts/cmu-serif-700-italic.ttf") format("truetype");
+}

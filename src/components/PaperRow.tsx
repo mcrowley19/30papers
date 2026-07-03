@@ -13,9 +13,10 @@ export default function PaperRow({ paper }: { paper: Paper }) {
       <div className="relative mx-auto aspect-[3/4] w-full max-w-xs overflow-hidden bg-neutral-100 shadow-xl">
         {!imgFailed ? (
           <img
-            src={`/thumbnails/${paper.slug}.png`}
+            src={`/thumbnails/${paper.slug}.webp`}
             alt={paper.title}
             loading="lazy"
+            decoding="async"
             onError={() => setImgFailed(true)}
             className="absolute inset-0 h-full w-full object-cover object-top"
           />

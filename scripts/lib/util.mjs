@@ -10,6 +10,9 @@ export const ROOT = process.cwd();
 export const PAPERS_DIR = path.join(ROOT, "src/content/papers");
 export const FIG_DIR = path.join(ROOT, "public/figures");
 export const THUMB_DIR = path.join(ROOT, "public/thumbnails");
+// High-res PNG sources are kept out of public/ (they are not shipped); the
+// site loads the smaller resized .webp derived from them.
+export const THUMB_SRC_DIR = path.join(ROOT, "art-sources/thumbnails-png");
 export const TMP_DIR = path.join(ROOT, ".ingest-tmp");
 
 const UA =
@@ -17,7 +20,7 @@ const UA =
   "(KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 
 export async function ensureDirs() {
-  for (const d of [PAPERS_DIR, FIG_DIR, THUMB_DIR, TMP_DIR]) {
+  for (const d of [PAPERS_DIR, FIG_DIR, THUMB_DIR, THUMB_SRC_DIR, TMP_DIR]) {
     await mkdir(d, { recursive: true });
   }
 }
@@ -116,7 +119,8 @@ export async function makeThumbnailFromPdf(slug, pdfBuffer) {
     ]);
     const produced = path.join(outDir, `${slug}.pdf.png`);
     if (existsSync(produced)) {
-      // Normalize to PNG at a high-resolution card width (crisp on retina).
+      // Keep a high-resolution PNG source (out of public/, not shipped)...
+      const pngSrc = path.join(THUMB_SRC_DIR, `${slug}.png`);
       await execFileP("sips", [
         "-s",
         "format",
@@ -125,7 +129,21 @@ export async function makeThumbnailFromPdf(slug, pdfBuffer) {
         "2200",
         produced,
         "--out",
-        path.join(THUMB_DIR, `${slug}.png`),
+        pngSrc,
+      ]);
+      // ...and ship a resized WebP (~1300px tall, q80): the card renders at
+      // most ~82vh tall, so this is far smaller than the source with no
+      // visible loss. Cuts the shipped thumbnail from ~800KB to ~100KB.
+      await execFileP("cwebp", [
+        "-quiet",
+        "-q",
+        "80",
+        "-resize",
+        "0",
+        "1300",
+        pngSrc,
+        "-o",
+        path.join(THUMB_DIR, `${slug}.webp`),
       ]);
       return true;
     }

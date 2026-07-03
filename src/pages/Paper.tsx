@@ -178,9 +178,10 @@ export default function Paper() {
           {/* Miniature version of the paper's thumbnail */}
           <div className="relative aspect-[3/4] w-28 sm:w-36 shrink-0 overflow-hidden bg-neutral-100 shadow-xl border border-rule/50 self-end">
             <img
-              src={`/thumbnails/${paper.slug}.png`}
+              src={`/thumbnails/${paper.slug}.webp`}
               alt={paper.title}
               loading="lazy"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover object-top"
             />
           </div>

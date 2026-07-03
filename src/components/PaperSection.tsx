@@ -146,9 +146,11 @@ export default function PaperSection({
         >
           {!imgFailed ? (
             <img
-              src={`/thumbnails/${paper.slug}.png`}
+              src={`/thumbnails/${paper.slug}.webp`}
               alt={paper.title}
               onError={() => setImgFailed(true)}
+              loading="lazy"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover object-top"
             />
           ) : (

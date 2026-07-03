@@ -70,7 +70,8 @@ export const papers: Paper[] = [
       "A blog essay asking for a formal law that explains why the complexity of a closed system rises, peaks, and falls, rather than simply tracking entropy.",
     kind: "blog",
     sourceUrl: "https://scottaaronson.blog/?p=762",
-    risk: "review",
+    // Permission to host granted by Scott Aaronson (July 2026).
+    risk: "open",
   },
   {
     slug: "kolmogorov-complexity",
@@ -202,7 +203,7 @@ export const papers: Paper[] = [
   {
     slug: "deep-speech-2",
     title: "Deep Speech 2: End-to-End Speech Recognition in English and Mandarin",
-    authors: "Amodei, Ananthanarayanan, and others (Baidu)",
+    authors: "Amodei, Anubhai, and others (Baidu)",
     year: 2015,
     blurb:
       "An end to end speech recognition system trained with connectionist temporal classification that worked across two very different languages.",

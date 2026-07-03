@@ -27,7 +27,8 @@ export const sources = [
     kind: "blog",
     pageUrl: "https://scottaaronson.blog/?p=762",
     selectors: [".entry", ".post", "#content", "article"],
-    risk: "review",
+    // Permission to host granted by Scott Aaronson (July 2026).
+    risk: "open",
   },
   {
     slug: "kolmogorov-complexity",

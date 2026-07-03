@@ -34,7 +34,7 @@ const FULL_NAMES: Record<string, string> = {
   Ren: "Shaoqing Ren",
   Yu: "Fisher Yu",
   Koltun: "Vladlen Koltun",
-  Ananthanarayanan: "Sundaram Ananthanarayanan",
+  Anubhai: "Rishita Anubhai",
   Santoro: "Adam Santoro",
   Raposo: "David Raposo",
   Barrett: "David G. T. Barrett",
