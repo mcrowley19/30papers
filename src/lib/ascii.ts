@@ -9,6 +9,15 @@ export const GLOW = "150,196,255"; // brightest highlight blue
 // Density ramp, lightest to heaviest, shared across backdrops.
 export const DOTS = " ·:•●◉";
 
+// Landing-page (dark cobalt ground) remap of the core palette: dim strokes go
+// light periwinkle, highlights go cream, and the brightest marks go warm gold,
+// so every backdrop keeps its concept but reads like retro dither art.
+export const DARK_REMAP: Record<string, string> = {
+  [BLUE]: "138,168,240",
+  [ACCENT]: "236,226,190",
+  [GLOW]: "247,209,138",
+};
+
 export function clamp01(n: number) {
   return n < 0 ? 0 : n > 1 ? 1 : n;
 }

@@ -152,6 +152,27 @@ async function run() {
   }
 
   for (const src of selected) {
+    if (src.risk === "review") {
+      process.stdout.write(`- ${src.slug} [${src.kind}] (copyrighted, skipping text) ... `);
+      try {
+        let thumb = false;
+        if (!noThumbs) {
+          const pdfUrl = src.kind === "arxiv" ? arxivPdfUrl(src.arxivId) : src.pdfUrl;
+          if (pdfUrl) {
+            const buf = await fetchBuffer(pdfUrl, { retries: 2 });
+            thumb = await makeThumbnailFromPdf(src.slug, buf);
+          }
+        }
+        results.push({ slug: src.slug, status: "ok", images: 0, thumb, chars: 0 });
+        console.log(`ok (skipped text${thumb ? ", generated thumb" : ""})`);
+      } catch (err) {
+        results.push({ slug: src.slug, status: "FAIL", error: String(err.message || err) });
+        console.log(`FAIL: ${err.message || err}`);
+      }
+      await sleep(400);
+      continue;
+    }
+
     const outPath = path.join(PAPERS_DIR, `${src.slug}.html`);
     if (!force && existsSync(outPath)) {
       results.push({ slug: src.slug, status: "skip (exists)" });

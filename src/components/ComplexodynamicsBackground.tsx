@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { CELL, BLUE, ACCENT } from "../lib/ascii";
+import { CELL, BLUE, ACCENT, DARK_REMAP } from "../lib/ascii";
 
 /**
  * Animated ASCII backdrop for "The First Law of Complexodynamics" (Aaronson,
@@ -26,8 +26,10 @@ function hash(x: number, y: number) {
 
 export default function ComplexodynamicsBackground({
   className = "",
+  dark = false,
 }: {
   className?: string;
+  dark?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -74,7 +76,7 @@ export default function ComplexodynamicsBackground({
     function paint(cx: number, cy: number, intensity: number, color: string, alpha: number) {
       const ch = RAMP[Math.min(RAMP.length - 1, Math.floor(intensity * RAMP.length))];
       if (ch === " ") return;
-      ctx!.fillStyle = `rgba(${color},${clamp(alpha, 0, 0.9)})`;
+      ctx!.fillStyle = `rgba(${dark ? (DARK_REMAP[color] ?? color) : color},${clamp(alpha, 0, 0.9)})`;
       ctx!.fillText(ch, (cx + 0.5) * cell, (cy + 0.5) * cell);
     }
 
@@ -179,7 +181,7 @@ export default function ComplexodynamicsBackground({
       ro.disconnect();
       io.disconnect();
     };
-  }, []);
+  }, [dark]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }

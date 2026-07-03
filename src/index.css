@@ -12,8 +12,11 @@
 @import "@fontsource/geist/700.css";
 @import "@fontsource/geist-mono/500.css";
 @import "@fontsource/geist-mono/600.css";
-/* CMU Serif = Computer Modern, the typeface arXiv/LaTeX papers are set in. */
+/* CMU Serif = Computer Modern, the typeface arXiv/LaTeX papers are set in.
+   Typewriter + Sans cover LaTeX's \texttt and \textsf inside paper bodies. */
 @import "computer-modern/cmu-serif.css";
+@import "computer-modern/cmu-typewriter-text.css";
+@import "computer-modern/cmu-sans-serif.css";
 @import "katex/dist/katex.min.css";
 
 @tailwind base;
@@ -38,77 +41,356 @@
 }
 
 @layer components {
-  /* Long-form paper body typography. Applied to ingested HTML. */
+  /* The landing page ground: the same cool paper-white as the reading page,
+     faintly darker at the very top so the hero rays and cobalt wordmark pop. */
+  .landing-paper {
+    background: linear-gradient(180deg, #eceef6 0%, #fafbfd 60vh, #f4f5f9 100%);
+  }
+
+  /* The wordmark's extruded pixel-art look, carried down the page: cobalt
+     face with a gold flank receding down-right, echoing the title dither. */
+  .title-extrude {
+    color: theme("colors.cover.DEFAULT");
+    text-shadow:
+      0.045em 0.045em 0 rgba(205, 152, 68, 0.9),
+      0.09em 0.09em 0 rgba(205, 152, 68, 0.55),
+      0.135em 0.135em 0 rgba(205, 152, 68, 0.25);
+  }
+
+  /* Marginalia plates beside each paper: a small sheet of the site's paper
+     tone, frosted just enough that ink text reads over any backdrop while
+     the design stays visible around (and faintly through) it. */
+  .margin-plate {
+    background: rgba(250, 251, 253, 0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid theme("colors.rule");
+    box-shadow: 0 12px 32px -12px rgba(16, 31, 92, 0.25);
+    padding: 1.5rem 1.6rem;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Paper reader. The goal is fidelity to the source: arXiv papers come
+   * in as LaTeXML HTML (ltx_* classes) and are set exactly like the
+   * LaTeX original — Computer Modern, justified, indented paragraphs,
+   * LaTeX-style captions, tables and bibliography. Generic rules below
+   * cover the few papers ingested from PDFs or blog posts instead.
+   * ------------------------------------------------------------------ */
   .prose-paper {
-    @apply font-serif text-[1.075rem] leading-[1.75] text-ink;
+    font-family: "CMU Serif", "Newsreader", Georgia, serif;
+    @apply text-ink;
+    font-size: 1.16rem;
+    line-height: 1.45;
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+    /* A LaTeX text block: one measured column, centered on the sheet. */
+    max-width: 52rem;
+    margin-inline: auto;
     /* Long URLs and unbreakable tokens wrap instead of widening the page. */
     overflow-wrap: break-word;
   }
+
+  /* --- Generic fallback (PDF-extracted and blog-sourced papers) --- */
   .prose-paper p {
-    @apply my-5;
+    margin: 0 0 0.75em;
   }
   .prose-paper h1,
   .prose-paper h2,
-  .prose-paper h3 {
-    @apply font-serif font-semibold text-ink mt-12 mb-4 leading-tight;
+  .prose-paper h3,
+  .prose-paper h4 {
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 1.6em 0 0.6em;
+    text-align: left;
   }
-  .prose-paper h1 {
-    @apply text-3xl;
-  }
-  .prose-paper h2 {
-    @apply text-2xl;
-  }
-  .prose-paper h3 {
-    @apply text-xl;
-  }
+  .prose-paper h1 { font-size: 1.65rem; }
+  .prose-paper h2 { font-size: 1.42rem; }
+  .prose-paper h3 { font-size: 1.25rem; }
+  .prose-paper h4 { font-size: 1.16rem; }
   .prose-paper a {
     @apply text-accent underline decoration-rule underline-offset-2 hover:decoration-accent;
   }
   .prose-paper figure {
-    @apply my-8;
+    margin: 1.5em 0;
   }
-  .prose-paper figure img {
-    @apply mx-auto max-w-full;
+  .prose-paper img {
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
   }
   .prose-paper figcaption {
-    @apply mt-3 text-center text-sm text-muted font-sans;
+    margin-top: 0.6em;
+    font-size: 0.88em;
+    line-height: 1.35;
+    text-align: center;
   }
-  .prose-paper ul {
-    @apply my-5 list-disc pl-6;
-  }
-  .prose-paper ol {
-    @apply my-5 list-decimal pl-6;
-  }
-  .prose-paper li {
-    @apply my-2;
-  }
+  .prose-paper ul { margin: 0.8em 0; padding-left: 2em; list-style: disc; }
+  .prose-paper ol { margin: 0.8em 0; padding-left: 2em; list-style: decimal; }
+  .prose-paper li { margin: 0.25em 0; }
   .prose-paper blockquote {
-    @apply border-l-2 border-rule pl-5 italic text-muted my-6;
-  }
-  /* Wide tables scroll inside their column rather than widening the page on
-     narrow screens. `block` lets the overflow take effect on the table itself. */
-  .prose-paper table {
-    @apply my-6 block max-w-full overflow-x-auto border-collapse text-[0.95rem] font-sans;
-  }
-  .prose-paper th,
-  .prose-paper td {
-    @apply border border-rule px-3 py-2 text-left;
+    margin: 1em 2em;
+    font-style: italic;
   }
   .prose-paper code {
-    @apply font-mono text-[0.9em] bg-rule/40 rounded px-1 py-0.5;
+    font-family: "CMU Typewriter Text", ui-monospace, monospace;
+    font-size: 0.95em;
   }
   .prose-paper pre {
-    @apply my-6 overflow-x-auto rounded-md bg-ink p-4 text-sm text-paper;
+    margin: 1.2em 0;
+    padding: 0.8em 1em;
+    overflow-x: auto;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-align: left;
+    background: theme("colors.paper.raised");
+    border: 1px solid theme("colors.rule");
   }
   .prose-paper pre code {
-    @apply bg-transparent p-0 text-paper;
+    background: transparent;
+    padding: 0;
   }
-  /* Long display equations scroll within the column instead of forcing a
-     page-wide horizontal scrollbar on small screens. */
+  /* Long display equations scroll instead of forcing page-wide overflow. */
   .prose-paper .katex-display {
-    @apply overflow-x-auto overflow-y-hidden;
-    padding-bottom: 0.25rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin: 1em 0;
+    padding-block: 0.2em;
+    text-indent: 0 !important;
   }
+  .prose-paper math[display="block"] {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+  }
+
+  /* --- LaTeXML documents: paragraphs --- */
+  /* LaTeX paragraphs are indented, not spaced apart. */
+  .prose-paper .ltx_para { margin: 0; }
+  .prose-paper .ltx_p {
+    margin: 0;
+    text-indent: 1.5em;
+  }
+  .prose-paper .ltx_para.ltx_noindent > .ltx_p:first-child,
+  .prose-paper .ltx_abstract .ltx_p,
+  .prose-paper figcaption .ltx_p,
+  .prose-paper .ltx_item .ltx_p,
+  .prose-paper .ltx_td .ltx_p,
+  .prose-paper .ltx_note_content .ltx_p {
+    text-indent: 0;
+  }
+  /* Small gap between LaTeX paragraph blocks so the wall of text breathes
+     the same way \parskip-less LaTeX does after rasterization. */
+  .prose-paper .ltx_para + .ltx_para { margin-top: 0.35em; }
+
+  /* --- LaTeXML: front matter and sectioning --- */
+  .prose-paper .ltx_abstract {
+    margin: 1.8em 2.5em;
+    font-size: 0.94em;
+  }
+  .prose-paper .ltx_title_abstract {
+    text-align: center;
+    font-size: 1.05em;
+    margin: 0 0 0.7em;
+  }
+  .prose-paper .ltx_title_section,
+  .prose-paper .ltx_title_appendix,
+  .prose-paper .ltx_title_bibliography {
+    font-size: 1.5rem;
+    margin: 1.8em 0 0.8em;
+  }
+  .prose-paper .ltx_title_subsection { font-size: 1.28rem; margin: 1.5em 0 0.6em; }
+  .prose-paper .ltx_title_subsubsection { font-size: 1.18rem; margin: 1.3em 0 0.5em; }
+  /* \paragraph{} headings run bold at text size. */
+  .prose-paper .ltx_title_paragraph {
+    font-size: 1.16rem;
+    margin: 1em 0 0.2em;
+  }
+  .prose-paper .ltx_tag_section,
+  .prose-paper .ltx_tag_subsection,
+  .prose-paper .ltx_tag_subsubsection {
+    margin-right: 0.5em;
+  }
+
+  /* --- LaTeXML: inline text roles --- */
+  .prose-paper .ltx_font_bold { font-weight: 700; }
+  .prose-paper .ltx_font_italic { font-style: italic; }
+  .prose-paper .ltx_font_smallcaps { font-variant: small-caps; }
+  .prose-paper .ltx_font_typewriter {
+    font-family: "CMU Typewriter Text", ui-monospace, monospace;
+  }
+  .prose-paper .ltx_font_sansserif {
+    font-family: "CMU Sans Serif", Inter, sans-serif;
+  }
+  .prose-paper .ltx_emph { font-style: italic; }
+  .prose-paper .ltx_align_center { text-align: center; }
+  .prose-paper .ltx_align_left { text-align: left; }
+  .prose-paper .ltx_align_right { text-align: right; }
+  .prose-paper .ltx_align_top { vertical-align: top; }
+  .prose-paper .ltx_align_middle { vertical-align: middle; }
+  .prose-paper .ltx_align_bottom { vertical-align: bottom; }
+  .prose-paper .ltx_align_baseline { vertical-align: baseline; }
+  .prose-paper .ltx_centering { margin-inline: auto; text-align: center; }
+
+  /* Browsers italicize <cite> by default; LaTeX citations are upright. */
+  .prose-paper cite { font-style: normal; }
+
+  /* In-text citations and cross references are set in the text ink, exactly
+     as they appear in the printed paper; only true external links use the
+     site accent. */
+  .prose-paper .ltx_ref,
+  .prose-paper .ltx_cite a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .prose-paper .ltx_ref:hover,
+  .prose-paper .ltx_cite a:hover {
+    @apply text-accent;
+  }
+
+  /* --- LaTeXML: display equations (emitted as layout tables) --- */
+  .prose-paper .ltx_eqn_table {
+    display: table;
+    width: 100%;
+    margin: 0.9em 0;
+    table-layout: auto;
+    border-collapse: collapse;
+  }
+  .prose-paper .ltx_eqn_row { display: table-row; }
+  .prose-paper .ltx_eqn_cell {
+    display: table-cell;
+    padding: 0;
+    border: none;
+    text-indent: 0;
+  }
+  .prose-paper .ltx_eqn_center_padleft,
+  .prose-paper .ltx_eqn_center_padright { width: 50%; }
+  .prose-paper .ltx_eqn_eqno {
+    width: 1%;
+    white-space: nowrap;
+    padding-left: 1em;
+  }
+
+  /* --- LaTeXML: figures and tables --- */
+  .prose-paper .ltx_figure,
+  .prose-paper .ltx_table {
+    margin: 1.6em 0;
+    text-align: center;
+  }
+  .prose-paper .ltx_graphics { max-width: 100%; height: auto; }
+  .prose-paper .ltx_caption {
+    margin-top: 0.6em;
+    font-size: 0.88em;
+    line-height: 1.35;
+    text-align: center;
+  }
+  .prose-paper .ltx_tag_figure,
+  .prose-paper .ltx_tag_table { margin-right: 0.25em; }
+  .prose-paper .ltx_flex_figure { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5em; }
+  .prose-paper .ltx_flex_cell { flex: 0 1 auto; min-width: 0; }
+  .prose-paper .ltx_flex_break { flex-basis: 100%; height: 0; }
+
+  /* Data tables carry their rules via ltx_border_* classes; there are no
+     default cell borders, exactly like booktabs/LaTeX output. */
+  .prose-paper .ltx_tabular {
+    display: inline-table;
+    max-width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    line-height: 1.3;
+    margin: 0.4em auto;
+  }
+  .prose-paper .ltx_td,
+  .prose-paper .ltx_th {
+    padding: 0.15em 0.5em;
+    border: none;
+    font-weight: inherit;
+    white-space: normal;
+  }
+  .prose-paper .ltx_border_t { border-top: 1px solid currentColor; }
+  .prose-paper .ltx_border_b { border-bottom: 1px solid currentColor; }
+  .prose-paper .ltx_border_l { border-left: 1px solid currentColor; }
+  .prose-paper .ltx_border_r { border-right: 1px solid currentColor; }
+  .prose-paper .ltx_border_tt { border-top: 2px solid currentColor; }
+  .prose-paper .ltx_border_bb { border-bottom: 2px solid currentColor; }
+  .prose-paper .ltx_border_ll { border-left: 2px solid currentColor; }
+  .prose-paper .ltx_border_rr { border-right: 2px solid currentColor; }
+  /* Very wide tables scroll within the column on narrow screens. */
+  .prose-paper .ltx_table { overflow-x: auto; }
+
+  /* --- LaTeXML: theorems, listings, misc --- */
+  .prose-paper .ltx_theorem { margin: 1em 0; }
+  .prose-paper .ltx_title_theorem {
+    display: inline;
+    font-size: 1em;
+    margin: 0;
+  }
+  .prose-paper .ltx_theorem .ltx_title_theorem + div .ltx_p:first-child { display: inline; }
+  .prose-paper .ltx_listing {
+    font-family: "CMU Typewriter Text", ui-monospace, monospace;
+    font-size: 0.85em;
+    text-align: left;
+    margin: 1em 0;
+    overflow-x: auto;
+  }
+  .prose-paper .ltx_listingline { display: block; white-space: pre; }
+  .prose-paper .ltx_itemize, .prose-paper .ltx_enumerate { margin: 0.8em 0; }
+  .prose-paper .ltx_item { margin: 0.25em 0; }
+
+  /* --- LaTeXML: footnotes pop on hover, as in LaTeXML's own stylesheet --- */
+  .prose-paper .ltx_note { position: relative; }
+  .prose-paper .ltx_note_mark {
+    font-size: 0.72em;
+    vertical-align: super;
+    line-height: 0;
+    @apply text-accent;
+    cursor: pointer;
+  }
+  .prose-paper .ltx_note_outer { display: none; }
+  .prose-paper .ltx_note:hover .ltx_note_outer,
+  .prose-paper .ltx_note:focus-within .ltx_note_outer {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 1.4em;
+    z-index: 30;
+    width: min(24rem, 80vw);
+  }
+  .prose-paper .ltx_note_content {
+    display: block;
+    padding: 0.6em 0.8em;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    text-align: left;
+    text-indent: 0;
+    background: #fff;
+    border: 1px solid theme("colors.rule");
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.12);
+  }
+
+  /* --- LaTeXML: bibliography, LaTeX hanging-indent style --- */
+  .prose-paper .ltx_bibliography { font-size: 0.9em; }
+  .prose-paper .ltx_biblist {
+    list-style: none;
+    margin: 0.8em 0;
+    padding: 0;
+  }
+  .prose-paper .ltx_bibitem {
+    margin: 0 0 0.45em;
+    padding-left: 2.2em;
+    text-indent: -2.2em;
+    text-align: left;
+  }
+  .prose-paper .ltx_bibitem .ltx_tag_bibitem { margin-right: 0.4em; }
+  .prose-paper .ltx_bibblock { display: inline; }
+
+  /* Artifacts of the print layout that have no place on a web page. */
+  .prose-paper .ltx_pagination,
+  .prose-paper .ltx_role_newpage,
+  .prose-paper .ltx_ERROR {
+    display: none;
+  }
+  .prose-paper .ltx_transformed_outer { max-width: 100%; overflow: hidden; }
 }
 
 /* Streaming-token caret: a solid block that rides the end of generated text. */

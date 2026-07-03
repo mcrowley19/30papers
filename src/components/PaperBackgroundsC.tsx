@@ -1,14 +1,14 @@
 import FieldBackground, { type FieldEnv } from "./FieldBackground";
 import { BLUE, ACCENT, GLOW, hash } from "../lib/ascii";
 
-type Props = { className?: string };
+type Props = { className?: string; dark?: boolean };
 
 /* 18. Relational Reasoning: a set of objects with all-pairs relation lines
    pulsing between them. */
 function drawRelational({ t, cols, rows, paint, dot }: FieldEnv) {
   const N = 7;
   const nodes: { x: number; y: number }[] = [];
-  for (let i = 0; i < N; i++) nodes.push({ x: cols * (0.15 + 0.7 * hash(i, 1)), y: rows * (0.15 + 0.7 * hash(i, 2)) });
+  for (let i = 0; i < N; i++) nodes.push({ x: cols * (0.08 + 0.84 * hash(i, 1)), y: rows * (0.06 + 0.88 * hash(i, 2)) });
   for (let i = 0; i < N; i++) {
     for (let j = i + 1; j < N; j++) {
       const a = nodes[i];
@@ -55,11 +55,17 @@ function drawOrder({ t, cols, rows, paint, dot }: FieldEnv) {
     [perm[i], perm[j]] = [perm[j], perm[i]];
   }
   for (let i = 0; i < N; i++) {
-    dot(xs[i], topY, 1, ACCENT, 0.8);
-    dot(xs[perm[i]], botY, 1, BLUE, 0.7);
+    const pulse = 0.5 + 0.5 * Math.sin(t * 1.6 + i * 0.9);
+    dot(xs[i], topY, 1, ACCENT, 0.6 + 0.3 * pulse);
+    dot(xs[perm[i]], botY, 1, BLUE, 0.5 + 0.3 * pulse);
     const ax = xs[i];
     const bx = xs[perm[i]];
-    for (let s = 0; s <= botY - topY; s++) paint(Math.round(ax + ((bx - ax) * s) / (botY - topY)), topY + s, "·", BLUE, 0.16);
+    const H = botY - topY;
+    for (let s = 0; s <= H; s++) {
+      // A travelling brightening runs down each mapping line.
+      const run = Math.exp(-Math.pow((s / H - ((t * 0.4 + i * 0.13) % 1)) / 0.08, 2));
+      paint(Math.round(ax + ((bx - ax) * s) / H), topY + s, "·", BLUE, 0.12 + 0.35 * run);
+    }
   }
 }
 
@@ -68,7 +74,7 @@ function drawOrder({ t, cols, rows, paint, dot }: FieldEnv) {
 function drawRelRecurrent({ t, cols, rows, paint, dot }: FieldEnv) {
   const M = 6;
   const slotsY: number[] = [];
-  for (let i = 0; i < M; i++) slotsY.push(Math.round(rows * (0.15 + (0.7 * i) / (M - 1))));
+  for (let i = 0; i < M; i++) slotsY.push(Math.round(rows * (0.06 + (0.88 * i) / (M - 1))));
   // Two mirrored slot columns in the side margins (the centre is covered by
   // the thumbnail); attention arcs bow toward the interior but stay in-margin.
   for (const slotX of [Math.round(cols * 0.16), Math.round(cols * 0.84)]) {
@@ -95,22 +101,25 @@ function drawRelRecurrent({ t, cols, rows, paint, dot }: FieldEnv) {
 /* 22. Attention Is All You Need: a row of tokens with self-attention arcs from
    a sweeping query token, weighted by attention strength. */
 function drawAttention({ t, cols, rows, paint, dot }: FieldEnv) {
+  // Two token rows (encoder/decoder feel) so the arcs fill the full height.
   const N = Math.min(14, Math.floor(cols / 6));
-  const y = Math.round(rows * 0.5);
   const xs: number[] = [];
   for (let i = 0; i < N; i++) xs.push(Math.round(cols * (0.08 + (0.84 * i) / (N - 1))));
-  const q = Math.floor(t * 0.6) % N;
-  for (let i = 0; i < N; i++) {
-    const w = 0.5 + 0.5 * Math.sin((i - q) * 0.9 + t * 0.5) * Math.exp(-Math.abs(i - q) * 0.15);
-    const ax = xs[q];
-    const bx = xs[i];
-    const steps = Math.abs(bx - ax) + 1;
-    const height = rows * 0.28 * Math.min(1, (Math.abs(i - q) / N) * 2);
-    const up = (i + q) % 2 ? -1 : 1;
-    for (let s = 0; s <= steps; s++)
-      paint(Math.round(ax + ((bx - ax) * s) / steps), Math.round(y + up * Math.sin((s / steps) * Math.PI) * height), "·", ACCENT, 0.08 + 0.3 * w);
-  }
-  for (let i = 0; i < N; i++) dot(xs[i], y, 1, i === q ? GLOW : BLUE, i === q ? 0.95 : 0.6);
+  [0.25, 0.75].forEach((vy, R) => {
+    const y = Math.round(rows * vy);
+    const q = Math.floor(t * 0.6 + R * 3) % N;
+    for (let i = 0; i < N; i++) {
+      const w = 0.5 + 0.5 * Math.sin((i - q) * 0.9 + t * 0.5) * Math.exp(-Math.abs(i - q) * 0.15);
+      const ax = xs[q];
+      const bx = xs[i];
+      const steps = Math.abs(bx - ax) + 1;
+      const height = rows * 0.24 * Math.min(1, (Math.abs(i - q) / N) * 2);
+      const up = (i + q + R) % 2 ? -1 : 1;
+      for (let s = 0; s <= steps; s++)
+        paint(Math.round(ax + ((bx - ax) * s) / steps), Math.round(y + up * Math.sin((s / steps) * Math.PI) * height), "·", ACCENT, 0.08 + 0.3 * w);
+    }
+    for (let i = 0; i < N; i++) dot(xs[i], y, 1, i === q ? GLOW : BLUE, i === q ? 0.95 : 0.6);
+  });
 }
 
 export const RelationalReasoningBackground = (p: Props) => <FieldBackground draw={drawRelational} {...p} />;

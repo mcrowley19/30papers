@@ -4,36 +4,37 @@ export default {
   theme: {
     extend: {
       colors: {
-        // The monograph palette. A dark warm cover, a warm off-white "paper"
-        // body, and a single warm sienna accent. Deliberately NOT purple /
-        // navy+gold. One source of truth for both the cover and the body.
+        // The retro-dither palette, matching the landing wordmark and
+        // backdrops: deep cobalt ground, cool paper-white body, and the
+        // backdrops' cobalt as the single accent. One source of truth for
+        // both the cover and the body.
         //
         // Cover (the dark hero ground) and its two foreground tints.
         cover: {
-          DEFAULT: "#0e0e0d", // deep warm ink
-          fg: "#f5f3ee", // paper-white title
-          soft: "#d8d6cf", // subtitle on the cover
+          DEFAULT: "#101f5c", // deep cobalt, the wordmark ground
+          fg: "#f6ecd0", // cream title, as in the dither art
+          soft: "#cdd5ee", // periwinkle subtitle on the cover
         },
-        // Body "paper": warm off-white, with a slightly deeper raised surface
+        // Body "paper": cool off-white, with a slightly deeper raised surface
         // for thumbnails and insets.
         paper: {
-          DEFAULT: "#f3f0ea",
-          raised: "#efece6",
+          DEFAULT: "#f4f5f9",
+          raised: "#edeff5",
         },
         // Ink, from primary text down to faint hairline separators.
         ink: {
-          DEFAULT: "#1a1916",
-          soft: "#43403a", // blurbs / secondary prose
+          DEFAULT: "#16181f",
+          soft: "#3f434f", // blurbs / secondary prose
         },
-        muted: "#6f6a60", // mono author/year, captions
-        faint: "#c8c1b4", // in-text separators
-        rule: "#ddd7cc", // hairline rules between rows
-        // The single warm accent, with a deeper pressed/hover tone.
+        muted: "#69707f", // mono author/year, captions
+        faint: "#c2c8d8", // in-text separators
+        rule: "#dbdfea", // hairline rules between rows
+        // The single cobalt accent, with a deeper pressed/hover tone.
         accent: {
-          DEFAULT: "#a45a32", // sienna
-          deep: "#7e3f1e", // hover / pressed
-          ink: "#7e3f1e", // alias kept for detail-page links
-          soft: "#eeeae5",
+          DEFAULT: "#1e40af", // cobalt, same as the backdrop BLUE
+          deep: "#15307f", // hover / pressed
+          ink: "#15307f", // alias kept for detail-page links
+          soft: "#e5eaf8",
         },
       },
       fontFamily: {

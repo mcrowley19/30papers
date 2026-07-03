@@ -29,8 +29,10 @@ function lerp(a: number, b: number, t: number) {
 
 export default function CoffeeAutomatonBackground({
   className = "",
+  dark = false,
 }: {
   className?: string;
+  dark?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -143,16 +145,18 @@ export default function CoffeeAutomatonBackground({
       const ch = RAMP[idx];
       if (ch === " ") return;
       const a = clamp(0.22 + 0.72 * d, 0, 0.96);
-      // Steam stays light/airy even when thick; the mug ranges to deep navy.
-      const lo = steam ? [188, 218, 255] : LIGHT;
-      const hi = steam ? [120, 170, 248] : DEEP;
+      // Steam stays light/airy even when thick; the mug ranges to deep navy on
+      // the white paper pages, or to warm cream on the dark landing ground.
+      const lo = steam ? (dark ? [150, 175, 240] : [188, 218, 255]) : dark ? [130, 160, 235] : LIGHT;
+      const hi = steam ? (dark ? [225, 232, 255] : [120, 170, 248]) : dark ? [238, 226, 186] : DEEP;
       let r = lerp(lo[0], hi[0], d);
       let g = lerp(lo[1], hi[1], d);
       let b = lerp(lo[2], hi[2], d);
       if (glow > 0) {
-        r = lerp(r, STEAM_GLOW[0], glow);
-        g = lerp(g, STEAM_GLOW[1], glow);
-        b = lerp(b, STEAM_GLOW[2], glow);
+        const gc = dark ? [247, 209, 138] : STEAM_GLOW;
+        r = lerp(r, gc[0], glow);
+        g = lerp(g, gc[1], glow);
+        b = lerp(b, gc[2], glow);
       }
       ctx!.fillStyle = `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${a})`;
       ctx!.fillText(ch, px, py);
@@ -257,7 +261,7 @@ export default function CoffeeAutomatonBackground({
       ro.disconnect();
       io.disconnect();
     };
-  }, []);
+  }, [dark]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }

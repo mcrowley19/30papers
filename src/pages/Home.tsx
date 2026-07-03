@@ -1,6 +1,7 @@
-import type { ComponentType } from "react";
+import { useEffect, type ComponentType } from "react";
 import { papers } from "../data/papers";
 import PaperSection from "../components/PaperSection";
+import TitleAscii from "../components/TitleAscii";
 import BottleneckBackground from "../components/BottleneckBackground";
 import CodeLengthBackground from "../components/CodeLengthBackground";
 import CoffeeAutomatonBackground from "../components/CoffeeAutomatonBackground";
@@ -37,7 +38,7 @@ import {
   GPipeBackground,
 } from "../components/PaperBackgroundsD";
 
-type Bg = ComponentType<{ className?: string }>;
+type Bg = ComponentType<{ className?: string; dark?: boolean }>;
 
 // One animated backdrop per paper.
 const BACKGROUNDS: Record<string, Bg> = {
@@ -79,16 +80,37 @@ const SPILL: Record<string, string> = {
   "kolmogorov-complexity": "pointer-events-none absolute bottom-0 left-0 w-full h-[116vh]",
 };
 
-export default function Home() {
-  return (
-    <main className="min-h-screen overflow-x-hidden bg-white text-ink">
-      <div className="mx-auto max-w-3xl px-6 pt-16 sm:pt-24">
-        <h1 className="font-serif text-4xl sm:text-5xl">30 papers</h1>
-      </div>
+// From ResNet (paper 10) down, every backdrop gets a small upward spill so each
+// pattern rises across the seam and links into the section above.
+const FIELD_SPILL = "pointer-events-none absolute bottom-0 left-0 w-full h-[116vh]";
+const SPILL_FROM_INDEX = 9;
 
-      {papers.map((paper) => {
+export default function Home() {
+  // Snap on the landing page only: every scroll settles on the hero or a
+  // paper (never between two), and a hard fling still has to pass through
+  // each section, so nothing gets skipped by accident.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.scrollSnapType = "y mandatory";
+    return () => {
+      root.style.scrollSnapType = "";
+    };
+  }, []);
+
+  return (
+    // overflow-x-clip, not hidden: hidden would make <main> a scroll
+    // container and capture the sections' snap points away from the page.
+    <main className="landing-paper min-h-screen overflow-x-clip">
+      <header className="relative w-full snap-start px-4 pt-10 sm:pt-14">
+        <h1 className="relative block h-[30vh] min-h-[12rem] w-full sm:h-[44vh]">
+          <span className="sr-only">30 papers</span>
+          <TitleAscii className="absolute inset-0 h-full w-full" />
+        </h1>
+      </header>
+
+      {papers.map((paper, i) => {
         const Background = BACKGROUNDS[paper.slug];
-        const spill = SPILL[paper.slug];
+        const spill = SPILL[paper.slug] ?? (i >= SPILL_FROM_INDEX ? FIELD_SPILL : undefined);
         return (
           <PaperSection
             key={paper.slug}

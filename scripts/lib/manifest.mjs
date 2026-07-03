@@ -19,6 +19,7 @@ export const sources = [
     slug: "keeping-neural-networks-simple",
     kind: "pdf",
     pdfUrl: "https://www.cs.toronto.edu/~hinton/absps/colt93.pdf",
+    risk: "review",
   },
   { slug: "coffee-automaton", kind: "arxiv", arxivId: "1405.6903" },
   {
@@ -26,6 +27,7 @@ export const sources = [
     kind: "blog",
     pageUrl: "https://scottaaronson.blog/?p=762",
     selectors: [".entry", ".post", "#content", "article"],
+    risk: "review",
   },
   {
     slug: "kolmogorov-complexity",
@@ -34,6 +36,7 @@ export const sources = [
     // High copyright risk (see plan), but it is the actual chapter text.
     pdfUrl:
       "https://ftp.esat.kuleuven.be/pub/pub/SISTA/decock/voor_xander/referenties/Cover&Thomas/7.pdf",
+    risk: "review",
   },
   { slug: "mdl-principle-tutorial", kind: "arxiv", arxivId: "math/0406077" },
   {
@@ -46,12 +49,14 @@ export const sources = [
     kind: "notes",
     pageUrl: "https://cs231n.github.io/convolutional-networks/",
     selectors: [".post-content", ".page-content", "article", "#main_content"],
+    risk: "review",
   },
   {
     slug: "alexnet",
     kind: "pdf",
     pdfUrl:
       "https://proceedings.neurips.cc/paper_files/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf",
+    risk: "review",
   },
   { slug: "deep-residual-learning", kind: "arxiv", arxivId: "1512.03385" },
   { slug: "dilated-convolutions", kind: "arxiv", arxivId: "1511.07122" },
@@ -62,12 +67,14 @@ export const sources = [
     kind: "blog",
     pageUrl: "https://karpathy.github.io/2015/05/21/rnn-effectiveness/",
     selectors: [".post", "article", "#main"],
+    risk: "review",
   },
   {
     slug: "understanding-lstms",
     kind: "blog",
     pageUrl: "https://colah.github.io/posts/2015-08-Understanding-LSTMs/",
     selectors: [".post", "article", ".post-content"],
+    risk: "review",
   },
   { slug: "deep-speech-2", kind: "arxiv", arxivId: "1512.02595" },
   {

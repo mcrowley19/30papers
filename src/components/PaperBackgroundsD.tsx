@@ -1,15 +1,15 @@
 import FieldBackground, { type FieldEnv } from "./FieldBackground";
 import { BLUE, ACCENT, GLOW, hash } from "../lib/ascii";
 
-type Props = { className?: string };
+type Props = { className?: string; dark?: boolean };
 
 /* 23. Neural MT: a soft alignment matrix between two sequences, a shimmering
    near-diagonal of attention. */
 function drawNMT({ t, cols, rows, dot }: FieldEnv) {
-  const gx0 = Math.floor(cols * 0.14);
-  const gy0 = Math.floor(rows * 0.14);
-  const W = Math.floor(cols * 0.72);
-  const H = Math.floor(rows * 0.72);
+  const gx0 = Math.floor(cols * 0.04);
+  const gy0 = Math.floor(rows * 0.03);
+  const W = Math.floor(cols * 0.92);
+  const H = Math.floor(rows * 0.94);
   for (let iy = 0; iy <= H; iy++) {
     for (let ix = 0; ix <= W; ix++) {
       const u = ix / W;
@@ -25,19 +25,27 @@ function drawNMT({ t, cols, rows, dot }: FieldEnv) {
 /* 24. Pointer Networks: an output head that points back at a selected input
    position, cycling through the inputs. */
 function drawPointer({ t, cols, rows, paint, dot }: FieldEnv) {
-  const N = 12;
-  const inY = Math.round(rows * 0.1);
+  // Rows of input tokens at several heights; a row of output heads at the
+  // bottom, each pointing back at a (cycling) input position. Many arcs at
+  // once so the pattern has mass on the visible sides, not just the centre.
+  const N = 14;
   const xs: number[] = [];
-  for (let i = 0; i < N; i++) xs.push(Math.round(cols * (0.1 + (0.8 * i) / (N - 1))));
-  for (let i = 0; i < N; i++) dot(xs[i], inY, 0.9, BLUE, 0.55);
-  const outY = Math.round(rows * 0.9);
-  const outX = Math.round(cols * 0.5);
-  const sel = Math.floor(t * 0.8) % N;
-  dot(outX, outY, 1, GLOW, 0.9);
-  const steps = Math.round(Math.hypot(outX - xs[sel], outY - inY)) + 1;
-  for (let s = 0; s <= steps; s++)
-    paint(Math.round(outX + ((xs[sel] - outX) * s) / steps), Math.round(outY + ((inY - outY) * s) / steps), "·", ACCENT, 0.5);
-  dot(xs[sel], inY, 1, GLOW, 0.95);
+  for (let i = 0; i < N; i++) xs.push(Math.round(cols * (0.06 + (0.88 * i) / (N - 1))));
+  const inRows = [0.12, 0.38, 0.62].map((v) => Math.round(rows * v));
+  for (const y of inRows) for (let i = 0; i < N; i++) dot(xs[i], y, 0.8, BLUE, 0.45);
+  const outY = Math.round(rows * 0.88);
+  for (let o = 0; o < N; o += 2) {
+    const ox = xs[o];
+    dot(ox, outY, 1, ACCENT, 0.75);
+    const rowPick = inRows[(o / 2) % inRows.length];
+    const sel = (o + Math.floor(t * 0.8 + o * 0.7)) % N;
+    const tx = xs[sel];
+    const steps = Math.max(Math.abs(tx - ox), outY - rowPick) + 1;
+    const pulse = 0.35 + 0.3 * (0.5 + 0.5 * Math.sin(t * 2 + o));
+    for (let s = 0; s <= steps; s += 2)
+      paint(Math.round(ox + ((tx - ox) * s) / steps), Math.round(outY + ((rowPick - outY) * s) / steps), "·", ACCENT, pulse);
+    dot(tx, rowPick, 1, GLOW, 0.9);
+  }
 }
 
 /* 25. Neural Message Passing: a molecular graph with messages pulsing along
@@ -45,7 +53,7 @@ function drawPointer({ t, cols, rows, paint, dot }: FieldEnv) {
 function drawMessagePassing({ t, cols, rows, paint, dot }: FieldEnv) {
   const N = 8;
   const nodes: { x: number; y: number }[] = [];
-  for (let i = 0; i < N; i++) nodes.push({ x: cols * (0.2 + 0.6 * hash(i, 5)), y: rows * (0.2 + 0.6 * hash(i, 9)) });
+  for (let i = 0; i < N; i++) nodes.push({ x: cols * (0.08 + 0.84 * hash(i, 5)), y: rows * (0.08 + 0.84 * hash(i, 9)) });
   const edges: [number, number][] = [];
   for (let i = 0; i < N; i++) {
     edges.push([i, (i + 1) % N]);

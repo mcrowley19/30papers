@@ -1,7 +1,7 @@
 import FieldBackground, { type FieldEnv } from "./FieldBackground";
 import { BLUE, ACCENT, GLOW, hash } from "../lib/ascii";
 
-type Props = { className?: string };
+type Props = { className?: string; dark?: boolean };
 
 /* 12. Identity Mappings: a clean, uninterrupted signal highway (the identity
    shortcut) with small residual side-branches that leave and rejoin. */
@@ -81,19 +81,24 @@ function drawLstm({ t, cols, rows, dot }: FieldEnv) {
    characters on the right. */
 const TRANSCRIPT = "the quick brown fox jumps ".split("");
 function drawSpeech({ t, cols, rows, paint, dot }: FieldEnv) {
-  const midY = rows * 0.5;
+  // Three stacked waveform-to-text bands so the pattern fills the full height.
+  const bands = 3;
   const split = Math.floor(cols * 0.55);
-  for (let cx = 0; cx < split; cx++) {
-    const amp = (0.5 + 0.5 * Math.sin(cx * 0.5 - t * 4)) * Math.sin(cx * 0.13 + t) * rows * 0.3;
-    const yA = Math.round(midY + amp);
-    const yB = Math.round(midY - amp);
-    for (let cy = Math.min(yA, yB); cy <= Math.max(yA, yB); cy++) dot(cx, cy, 0.45, BLUE, 0.3);
-    dot(cx, yA, 0.9, ACCENT, 0.6);
-    dot(cx, yB, 0.9, ACCENT, 0.6);
-  }
-  for (let cx = split; cx < cols; cx += 2) {
-    if (cx - split > (t * 8) % (cols - split) + 6) continue;
-    paint(cx, Math.round(midY), TRANSCRIPT[cx % TRANSCRIPT.length], ACCENT, 0.7);
+  for (let B = 0; B < bands; B++) {
+    const midY = rows * ((B + 0.5) / bands);
+    const amp0 = rows * (0.5 / bands) * 0.85;
+    for (let cx = 0; cx < split; cx++) {
+      const amp = (0.5 + 0.5 * Math.sin(cx * 0.5 - t * 4 + B * 2)) * Math.sin(cx * 0.13 + t + B) * amp0;
+      const yA = Math.round(midY + amp);
+      const yB = Math.round(midY - amp);
+      for (let cy = Math.min(yA, yB); cy <= Math.max(yA, yB); cy++) dot(cx, cy, 0.45, BLUE, 0.28);
+      dot(cx, yA, 0.9, ACCENT, 0.6);
+      dot(cx, yB, 0.9, ACCENT, 0.6);
+    }
+    for (let cx = split; cx < cols; cx += 2) {
+      if (cx - split > (t * 8 + B * 11) % (cols - split) + 6) continue;
+      paint(cx, Math.round(midY), TRANSCRIPT[(cx + B * 5) % TRANSCRIPT.length], ACCENT, 0.7);
+    }
   }
 }
 

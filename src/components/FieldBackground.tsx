@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { CELL, DOTS, glyphFor } from "../lib/ascii";
+import { CELL, DARK_REMAP, DOTS, glyphFor } from "../lib/ascii";
 
 /**
  * Shared engine for the paper backdrops. Handles canvas sizing, the ~30fps
@@ -26,9 +26,15 @@ export interface FieldEnv {
 export default function FieldBackground({
   className = "",
   draw,
+  cell: cellProp = CELL,
+  dark = false,
 }: {
   className?: string;
   draw: (env: FieldEnv) => void;
+  /** Grid spacing override, e.g. a finer grid for the title wordmark. */
+  cell?: number;
+  /** Remap the core palette for the dark cobalt landing page. */
+  dark?: boolean;
 }) {
   const ref = useRef<HTMLCanvasElement | null>(null);
 
@@ -39,7 +45,7 @@ export default function FieldBackground({
     if (!ctx) return;
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const cell = CELL;
+    const cell = cellProp;
     let cols = 0;
     let rows = 0;
     let width = 0;
@@ -47,7 +53,8 @@ export default function FieldBackground({
 
     const paint = (cx: number, cy: number, glyph: string, color: string, alpha: number) => {
       if (!glyph || glyph === " " || alpha <= 0.02) return;
-      ctx!.fillStyle = `rgba(${color},${alpha > 0.95 ? 0.95 : alpha})`;
+      const c = dark ? (DARK_REMAP[color] ?? color) : color;
+      ctx!.fillStyle = `rgba(${c},${alpha > 0.95 ? 0.95 : alpha})`;
       ctx!.fillText(glyph, (cx + 0.5) * cell, (cy + 0.5) * cell);
     };
     const dot = (
@@ -122,7 +129,7 @@ export default function FieldBackground({
       ro.disconnect();
       io.disconnect();
     };
-  }, [draw]);
+  }, [draw, cellProp, dark]);
 
   return <canvas ref={ref} className={className} aria-hidden="true" />;
 }

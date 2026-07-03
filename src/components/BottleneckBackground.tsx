@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { CELL } from "../lib/ascii";
+import { CELL, DARK_REMAP } from "../lib/ascii";
 
 /**
  * Animated ASCII backdrop for the Variational Lossy Autoencoder section.
@@ -19,8 +19,10 @@ const RAMP = " ·:•●◉";
 
 export default function BottleneckBackground({
   className = "",
+  dark = false,
 }: {
   className?: string;
+  dark?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -101,7 +103,8 @@ export default function BottleneckBackground({
           const x = (cx + 0.5) * cell;
           const y = (cy + 0.5) * cell;
           const alpha = Math.min(0.55, (isLatent ? 0.8 : 0.5) * intensity);
-          ctx!.fillStyle = `rgba(${isLatent ? ACCENT : INK},${alpha})`;
+          const color = isLatent ? ACCENT : INK;
+          ctx!.fillStyle = `rgba(${dark ? DARK_REMAP[color] : color},${alpha})`;
           ctx!.fillText(ch, x, y);
         }
       }
@@ -156,7 +159,7 @@ export default function BottleneckBackground({
       ro.disconnect();
       io.disconnect();
     };
-  }, []);
+  }, [dark]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }

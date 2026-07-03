@@ -1,7 +1,7 @@
 import FieldBackground, { type FieldEnv } from "./FieldBackground";
 import { BLUE, ACCENT, GLOW, hash, clamp01 } from "../lib/ascii";
 
-type Props = { className?: string };
+type Props = { className?: string; dark?: boolean };
 
 /* 6. MDL Tutorial: data points scattered around a model curve that threads
    through them (the model is the short description that compresses the data). */

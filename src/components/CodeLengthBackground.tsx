@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { CELL } from "../lib/ascii";
+import { CELL, DARK_REMAP } from "../lib/ascii";
 
 /**
  * Animated ASCII backdrop for "Keeping Neural Networks Simple by Minimizing
@@ -29,8 +29,10 @@ function clamp01(n: number) {
 
 export default function CodeLengthBackground({
   className = "",
+  dark = false,
 }: {
   className?: string;
+  dark?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -86,7 +88,7 @@ export default function CodeLengthBackground({
               const ch = RAW[Math.min(RAW.length - 1, Math.floor(mag * RAW.length))];
               const a = (1 - c) * 0.5 * (0.45 + 0.55 * mag);
               if (a > 0.04) {
-                ctx!.fillStyle = `rgba(${BLUE},${a})`;
+                ctx!.fillStyle = `rgba(${dark ? DARK_REMAP[BLUE] : BLUE},${a})`;
                 ctx!.fillText(ch, x, y);
               }
             }
@@ -98,7 +100,7 @@ export default function CodeLengthBackground({
             if (s < 0.34) {
               const flip = Math.floor(t * 1.4 + s * 12) % 2;
               const a = c * 0.55;
-              ctx!.fillStyle = `rgba(${ACCENT},${a})`;
+              ctx!.fillStyle = `rgba(${dark ? DARK_REMAP[ACCENT] : ACCENT},${a})`;
               ctx!.fillText(flip ? "1" : "0", x, y);
             }
           }
@@ -153,7 +155,7 @@ export default function CodeLengthBackground({
       ro.disconnect();
       io.disconnect();
     };
-  }, []);
+  }, [dark]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }

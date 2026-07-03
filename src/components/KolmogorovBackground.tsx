@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { CELL, BLUE, ACCENT } from "../lib/ascii";
+import { CELL, BLUE, ACCENT, DARK_REMAP } from "../lib/ascii";
 
 /**
  * Animated ASCII backdrop for the Kolmogorov Complexity chapter.
@@ -28,8 +28,10 @@ function nextGen(cur: Uint8Array, cols: number) {
 
 export default function KolmogorovBackground({
   className = "",
+  dark = false,
 }: {
   className?: string;
+  dark?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -105,7 +107,7 @@ export default function KolmogorovBackground({
           const ch = dense ? "◉" : "●";
           const color = isolated ? ACCENT : BLUE;
           const a = (dense ? 0.6 : 0.45) * edge;
-          ctx!.fillStyle = `rgba(${color},${a})`;
+          ctx!.fillStyle = `rgba(${dark ? DARK_REMAP[color] : color},${a})`;
           ctx!.fillText(ch, (cx + 0.5) * cell, yc);
         }
       }
@@ -160,7 +162,7 @@ export default function KolmogorovBackground({
       ro.disconnect();
       io.disconnect();
     };
-  }, []);
+  }, [dark]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }
