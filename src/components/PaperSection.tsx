@@ -32,13 +32,9 @@ function ContributorAvatar({ slug, name, initials }: Contributor) {
 export default function PaperSection({
   paper,
   background,
-  overflowVisible = false,
 }: {
   paper: Paper;
   background: ReactNode;
-  /** Let the backdrop spill out of the section (e.g. steam rising into the
-   *  section above). Defaults to clipped. */
-  overflowVisible?: boolean;
 }) {
   const [imgFailed, setImgFailed] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -94,14 +90,16 @@ export default function PaperSection({
   }, []);
 
   const credit = creditFor(paper);
-  const more = credit.openEnded ? "& many others" : credit.extra > 0 ? `& ${credit.extra} more` : null;
+  const more = credit.openEnded
+    ? "many other researchers"
+    : credit.extra > 0
+      ? `${credit.extra} more researcher${credit.extra > 1 ? "s" : ""}`
+      : null;
 
   return (
     <section
       ref={sectionRef}
-      className={`relative flex min-h-screen snap-center snap-always items-center justify-center ${
-        overflowVisible ? "overflow-visible" : "overflow-hidden"
-      }`}
+      className="relative flex min-h-screen snap-center snap-always items-center justify-center overflow-hidden"
     >
       {background}
 
@@ -121,10 +119,15 @@ export default function PaperSection({
               <span className="font-serif text-sm leading-snug text-ink">{p.name}</span>
             </li>
           ))}
+          {more && (
+            <li className="flex items-center gap-3">
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white shadow-lg shadow-cover/25 ring-2 ring-cover font-serif text-base font-bold text-cover">
+                {credit.openEnded ? "+" : `+${credit.extra}`}
+              </span>
+              <span className="font-serif text-sm leading-snug text-ink">{more}</span>
+            </li>
+          )}
         </ul>
-        {more && (
-          <p className="mt-4 pl-1 font-serif text-sm italic text-muted">{more}</p>
-        )}
       </div>
 
       {/* Title and description, on a plate right of the thumbnail. */}

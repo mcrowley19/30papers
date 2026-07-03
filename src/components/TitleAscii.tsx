@@ -41,7 +41,7 @@ function buildMask(cols: number, rows: number) {
   // Fill plus a stroke of the same colour fattens the strokes so letter faces
   // are several cells wide on the coarse glyph grid.
   octx.strokeStyle = "#fff";
-  octx.lineWidth = S * 1.6;
+  octx.lineWidth = S * 0.9;
   octx.fillText(TEXT, (cols * S) / 2, (rows * S) / 2);
   octx.strokeText(TEXT, (cols * S) / 2, (rows * S) / 2);
 
@@ -63,11 +63,9 @@ const DEPTH = 4;
 // Classic ASCII density ramp for the letter faces (instead of the dot ramp).
 const CHARS = " .:-=+*#%@";
 
-// Retro-dither palette on the paper-white ground: a periwinkle sky with warm
-// gold clouds and sun rays, and the wordmark in deep cobalt with a gold
-// extruded flank.
+// Retro-dither palette: a periwinkle sky ray fan behind the wordmark, which
+// is set in deep cobalt with a gold extruded flank.
 const SKY = "30,64,175";
-const SKY_DEEP = "138,160,222";
 const CLOUD = "205,152,68";
 const COBALT = "16,31,92";
 const GOLD = "205,152,68";
@@ -112,8 +110,9 @@ function drawTitle({ t, cols, rows, dot, ctx, cell }: FieldEnv) {
         continue;
       }
 
-      // Dithered sky: sun rays fanning out from behind the word, with slow
-      // drifting cloud banks, all drawn as a dense halftone.
+      // Sun rays fanning out from behind the word: gold cloud streaks and the
+      // blue ray crests. The low troughs between rays stay clear, so nothing
+      // fills the gaps with faint scattered glyphs.
       const ang = Math.atan2(cy - ccy, cx - ccx);
       const ray = Math.pow(0.5 + 0.5 * Math.sin(ang * 11 + t * 0.1), 3);
       const cloud =
@@ -121,13 +120,18 @@ function drawTitle({ t, cols, rows, dot, ctx, cell }: FieldEnv) {
         0.28 * Math.sin(cx * 0.075 + t * 0.06 + Math.sin(cy * 0.3) * 1.4) * Math.cos(cy * 0.18 - t * 0.03) +
         0.22 * Math.sin(cx * 0.21 - t * 0.05 + cy * 0.13) +
         0.18 * (n - 0.5);
-      if (cloud > 0.72) {
+      // Fade clouds out before the bottom edge so no puff is left half-drawn
+      // where the graphic is clipped.
+      const bottomFade = clamp01((rows * 0.82 - cy) / (rows * 0.18));
+      if (cloud > 0.72 && bottomFade > 0) {
         // Gold cloud puffs against the periwinkle.
-        dot(cx, cy, 0.35 + (cloud - 0.72) * 2.2, CLOUD, 0.45 + (cloud - 0.72) * 1.3, CHARS);
-      } else {
-        // Cobalt texture over the pale ground, deepest along the rays.
+        dot(cx, cy, (0.35 + (cloud - 0.72) * 2.2) * bottomFade, CLOUD, (0.45 + (cloud - 0.72) * 1.3) * bottomFade, CHARS);
+      } else if (ray > 0.45 && Math.sin(ang) < 0.1) {
+        // Blue ray crests, but only the upward and horizontal fan: any ray with
+        // a downward tilt (sin(ang) > 0.1), including the diagonal bottom beams,
+        // is dropped. Troughs blank.
         const depth = clamp01(0.3 + 0.6 * ray + 0.25 * (cloud - 0.4));
-        dot(cx, cy, 0.25 + 0.55 * depth, ray > 0.45 ? SKY : SKY_DEEP, 0.2 + 0.45 * depth, CHARS);
+        dot(cx, cy, 0.25 + 0.55 * depth, SKY, 0.2 + 0.45 * depth, CHARS);
       }
     }
   }
@@ -135,5 +139,5 @@ function drawTitle({ t, cols, rows, dot, ctx, cell }: FieldEnv) {
 
 export default function TitleAscii({ className = "" }: { className?: string }) {
   // A finer grid than the backdrops so the letterforms carry enough detail.
-  return <FieldBackground draw={drawTitle} cell={9} className={className} />;
+  return <FieldBackground draw={drawTitle} cell={6} className={className} />;
 }

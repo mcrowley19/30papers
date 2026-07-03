@@ -9,7 +9,7 @@ export interface Contributor {
 }
 
 export interface Credit {
-  /** At most the first three listed contributors. */
+  /** All contributors when five or fewer are named, otherwise the first two, in credit order. */
   shown: Contributor[];
   /** How many further named contributors were cut, if any. */
   extra: number;
@@ -104,7 +104,7 @@ function toContributor(written: string, paperSlug: string): Contributor {
   };
 }
 
-/** Parse a paper's author credit into at most three contributors. */
+/** Parse a paper's author credit: everyone when five or fewer, else the first two. */
 export function creditFor(paper: Paper): Credit {
   // Drop parenthetical notes like "(Stanford)" or "(PhD dissertation)".
   const cleaned = paper.authors.replace(/\s*\([^)]*\)/g, "").trim();
@@ -114,9 +114,10 @@ export function creditFor(paper: Paper): Credit {
     .filter(Boolean);
   const openEnded = /^others?$/i.test(parts[parts.length - 1] ?? "");
   const named = openEnded ? parts.slice(0, -1) : parts;
+  const cutoff = named.length <= 5 && !openEnded ? named.length : 2;
   return {
-    shown: named.slice(0, 3).map((n) => toContributor(n, paper.slug)),
-    extra: Math.max(0, named.length - 3),
+    shown: named.slice(0, cutoff).map((n) => toContributor(n, paper.slug)),
+    extra: Math.max(0, named.length - cutoff),
     openEnded,
   };
 }

@@ -44,10 +44,17 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const RESEARCHER = /computer scient|machine learning|artificial intelligence|\bAI\b|deep learning|neural|research|informatic/i;
 
 async function fetchFromWikidata(name) {
-  const search = await fetch(
-    `https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&type=item&limit=5&search=${encodeURIComponent(name)}`,
-    { headers: { "User-Agent": UA } }
-  );
+  let search;
+  for (let i = 0; ; i++) {
+    search = await fetch(
+      `https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&language=en&type=item&limit=5&search=${encodeURIComponent(name)}`,
+      { headers: { "User-Agent": UA } }
+    );
+    if (search.status !== 429 || i >= 4) break;
+    const wait = Number(search.headers.get("retry-after")) * 1000 || 20000;
+    console.log(`    (rate limited, waiting ${Math.round(wait / 1000)}s)`);
+    await sleep(wait);
+  }
   if (!search.ok) throw new Error(`wikidata search HTTP ${search.status}`);
   const hits = (await search.json()).search ?? [];
   const hit = hits.find((h) => RESEARCHER.test(h.description ?? ""));
@@ -114,5 +121,5 @@ for (const name of allNames) {
       await sleep(1500 * attempt);
     }
   }
-  await sleep(400);
+  await sleep(2500);
 }

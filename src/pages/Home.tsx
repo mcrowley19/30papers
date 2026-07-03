@@ -73,18 +73,6 @@ const BACKGROUNDS: Record<string, Bg> = {
 
 const INSET = "absolute inset-0 h-full w-full";
 
-// Bespoke sections whose backdrop spills up across the seam into the one above.
-const SPILL: Record<string, string> = {
-  "coffee-automaton": "pointer-events-none absolute bottom-0 left-0 w-full h-[150vh]",
-  "first-law-of-complexodynamics": "pointer-events-none absolute bottom-0 left-0 w-full h-[150vh]",
-  "kolmogorov-complexity": "pointer-events-none absolute bottom-0 left-0 w-full h-[116vh]",
-};
-
-// From ResNet (paper 10) down, every backdrop gets a small upward spill so each
-// pattern rises across the seam and links into the section above.
-const FIELD_SPILL = "pointer-events-none absolute bottom-0 left-0 w-full h-[116vh]";
-const SPILL_FROM_INDEX = 9;
-
 export default function Home() {
   // Snap on the landing page only: every scroll settles on the hero or a
   // paper (never between two), and a hard fling still has to pass through
@@ -101,22 +89,33 @@ export default function Home() {
     // overflow-x-clip, not hidden: hidden would make <main> a scroll
     // container and capture the sections' snap points away from the page.
     <main className="landing-paper min-h-screen overflow-x-clip">
-      <header className="relative w-full snap-start px-4 pt-10 sm:pt-14">
-        <h1 className="relative block h-[30vh] min-h-[12rem] w-full sm:h-[44vh]">
+      <header className="relative w-full snap-start">
+        <h1 className="relative block h-[42vh] min-h-[16rem] w-full sm:h-[58vh]">
           <span className="sr-only">30 papers</span>
           <TitleAscii className="absolute inset-0 h-full w-full" />
         </h1>
+        <div className="margin-plate mr-auto ml-6 mt-2 w-[min(22rem,88vw)] text-pretty sm:ml-12">
+          <p className="font-serif text-sm leading-relaxed text-ink-soft">
+            This website is based on a rumoured list of papers that Ilya Sutskever gave to John Carmack. We currently
+            only have a list of 27. If you or anyone you know has the full, canonical list please{" "}
+            <a
+              href="https://michaelcrowley.dev"
+              className="text-cover underline decoration-from-font underline-offset-2 transition-colors hover:text-ink"
+            >
+              feel free to reach out
+            </a>
+            .
+          </p>
+        </div>
       </header>
 
-      {papers.map((paper, i) => {
+      {papers.map((paper) => {
         const Background = BACKGROUNDS[paper.slug];
-        const spill = SPILL[paper.slug] ?? (i >= SPILL_FROM_INDEX ? FIELD_SPILL : undefined);
         return (
           <PaperSection
             key={paper.slug}
             paper={paper}
-            overflowVisible={!!spill}
-            background={<Background className={spill ?? INSET} />}
+            background={<Background className={INSET} />}
           />
         );
       })}
