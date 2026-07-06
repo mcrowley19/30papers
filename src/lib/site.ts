@@ -6,6 +6,7 @@ export const SITE = {
     "A curated reading list of foundational AI and deep learning papers, hosted in full with plain-language explanations of difficult terms.",
   /** Production origin for canonical links, sitemaps, and social cards. */
   url: (import.meta.env.VITE_SITE_URL as string | undefined)?.replace(/\/$/, "") ?? "https://30papers.com",
+  github: "https://github.com/mcrowley19/30papers",
 } as const;
 
 export function absoluteUrl(path: string): string {
