@@ -1,64 +1,17 @@
 # 30 papers
 
-A reading list site for getting current with modern AI, based on the well-known
-Sutskever reading list. The landing page greets you with **"30 papers"** on a
-pure white page; scrolling reveals a minimised image of each paper that extends
-a black panel with a short description on hover. Clicking opens a full reader
-page hosted on this site, where difficult terms are wrapped in a bubble that
-opens a side panel explaining them in plain language.
+**[30papers.com](https://30papers.com)** — The **rumoured** collection of papers that Ilya Sutskever provided to John Carmack which reportedly contains 
 
-Built with **Vite + React (TypeScript) + Tailwind**.
+This is a website designed for people who are completely, or almost completely, new to reading research papers. It contains summaries for each paper, highlighted keywords with predefined definitions and buttons to ask ChatGPT or Claude about any concepts that you are struggling with.
 
-## Develop
+## Contribution
 
-```bash
-npm install
-npm run dev        # http://localhost:5173
-npm run build      # type-check + production build to dist/
-npm run preview    # serve the production build
-```
+Despite how nice the UI looks (If I do say so myself), I am an undergrad student without any formal ML education and so some of the summaries or keywords may be incorrect. 
 
-Because it is a single-page app, configure your static host to fall back to
-`index.html` for unknown routes so deep links like `/papers/gpipe` resolve.
+In additition, even though I have read the vast majority of the papers featured on the website, I have not read through each of the website's versions end to end. As a result there may be slight formatting mistakes.
 
-## How content works
+Some of the blogs or papers are under copyright protection and they are not featured. If you or anyone you know has the ability to grant me permission to add these to the website I would really appreciate it.
 
-Each paper is two files keyed by its slug (see `src/data/papers.ts`):
+Lastly, this website is built on a rough list provided by ex-OpenAI employee Andrew Carr on X. If you have the real, canonical list please reach out.
 
-- `src/content/papers/<slug>.html` — the full paper body, self-hosted.
-- `src/content/terms/<slug>.ts` — the curated hard terms and their beginner
-  friendly definitions.
-
-Both are loaded lazily per route via `import.meta.glob`, so a reader page only
-downloads the paper it shows. Term bubbles are injected at render time by
-`src/lib/renderWithTerms.tsx`, which wraps the first occurrence of each term in
-the body and leaves math, code, and headings untouched.
-
-Term definitions must not contain em-dashes:
-
-```bash
-npm run check:emdash
-```
-
-## Refreshing paper text
-
-The full text and first-page thumbnails are produced by an ingestion pipeline:
-
-```bash
-npm run fetch:papers                 # all papers, skip ones already present
-npm run fetch:papers -- --force      # re-ingest everything
-npm run fetch:papers -- --only=gpipe # a single paper
-```
-
-It pulls arXiv papers as HTML (via ar5iv, falling back to PDF text), scrapes the
-blog and course-note sources, extracts text from PDF-only papers, self-hosts all
-images under `public/figures/<slug>/`, and renders thumbnails into
-`public/thumbnails/<slug>.png`. Sources live in `scripts/lib/manifest.mjs`.
-
-## Notes
-
-- Two-column PDF-only papers (AlexNet, the Hinton 1993 paper, the Kolmogorov
-  chapter) are extracted with pdfjs and have some reading-order artifacts.
-- Re-hosting full paper text has copyright implications for several items on the
-  list; the highest-risk ones are the textbook chapter, the ACM paper, the
-  NeurIPS paper, the Stanford notes, and the three personal blog posts.
+Built by [Michael](https://michaelcrowley.dev). If this has helped you in any way I would love to hear about it.

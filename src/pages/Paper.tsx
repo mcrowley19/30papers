@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
+import Seo from "../components/Seo";
 import SelectionAskPopup from "../components/SelectionAskPopup";
 import { Link, useParams } from "react-router-dom";
 import { paperBySlug } from "../data/papers";
 import { loadPaperContent, type PaperContent } from "../lib/content";
 import { renderWithTerms } from "../lib/renderWithTerms";
 import { useTermPanel } from "../context/TermPanelContext";
+import { paperMeta } from "../lib/seo";
 import NotFound from "./NotFound";
 import BottleneckBackground from "../components/BottleneckBackground";
 import CodeLengthBackground from "../components/CodeLengthBackground";
@@ -120,12 +122,15 @@ export default function Paper() {
     return renderWithTerms(content.html, content.terms);
   }, [content]);
 
+  const seo = useMemo(() => (paper ? paperMeta(paper) : null), [paper]);
+
   if (!paper) return <NotFound />;
 
   const Background = BACKGROUNDS[paper.slug];
 
   return (
     <main className={`min-h-screen bg-paper/50 transition-[margin] duration-300 ${activeTerm ? "lg:mr-[26rem]" : ""}`}>
+      {seo && <Seo {...seo} />}
       {/* Monograph/Landing page inspired hero header */}
       <div className="relative w-full overflow-hidden border-b border-rule bg-white py-16">
         {Background && (

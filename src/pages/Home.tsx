@@ -1,6 +1,8 @@
-import { useEffect, type ComponentType } from "react";
+import { useEffect, useMemo, type ComponentType } from "react";
 import { papers } from "../data/papers";
+import Seo from "../components/Seo";
 import PaperSection from "../components/PaperSection";
+import { homeMeta } from "../lib/seo";
 import TitleAscii from "../components/TitleAscii";
 import BottleneckBackground from "../components/BottleneckBackground";
 import CodeLengthBackground from "../components/CodeLengthBackground";
@@ -74,6 +76,8 @@ const BACKGROUNDS: Record<string, Bg> = {
 const INSET = "absolute inset-0 h-full w-full";
 
 export default function Home() {
+  const seo = useMemo(() => homeMeta(), []);
+
   // Snap on the landing page only: every scroll settles on the hero or a
   // paper (never between two), and a hard fling still has to pass through
   // each section, so nothing gets skipped by accident.
@@ -89,6 +93,7 @@ export default function Home() {
     // overflow-x-clip, not hidden: hidden would make <main> a scroll
     // container and capture the sections' snap points away from the page.
     <main className="landing-paper min-h-screen overflow-x-clip">
+      <Seo {...seo} />
       <header className="relative w-full snap-start">
         <h1 className="relative block h-[42vh] min-h-[16rem] w-full sm:h-[58vh]">
           <span className="sr-only">30 papers</span>

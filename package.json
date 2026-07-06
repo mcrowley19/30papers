@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "node scripts/generate-seo.mjs --public && tsc && vite build && node scripts/generate-seo.mjs --prerender",
     "preview": "vite preview",
     "check:emdash": "node scripts/check-emdash.mjs",
     "fetch:papers": "node scripts/fetch-papers.mjs"

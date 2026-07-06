@@ -1,8 +1,14 @@
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import Seo from "../components/Seo";
+import { notFoundMeta } from "../lib/seo";
 
 export default function NotFound() {
+  const seo = useMemo(() => notFoundMeta(), []);
+
   return (
     <main className="mx-auto flex min-h-screen max-w-reading flex-col justify-center px-6">
+      <Seo {...seo} />
       <p className="font-sans text-sm uppercase tracking-[0.2em] text-muted">
         Not found
       </p>
