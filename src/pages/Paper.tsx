@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState, type ComponentType } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
+import SelectionAskPopup from "../components/SelectionAskPopup";
 import { Link, useParams } from "react-router-dom";
 import { paperBySlug } from "../data/papers";
 import { loadPaperContent, type PaperContent } from "../lib/content";
@@ -80,6 +81,7 @@ export default function Paper() {
 
   const [content, setContent] = useState<PaperContent | null>(null);
   const [loading, setLoading] = useState(true);
+  const articleRef = useRef<HTMLElement>(null);
 
   // Close any open panel when navigating between papers.
   useEffect(() => {
@@ -196,8 +198,12 @@ export default function Paper() {
         ) : paper.risk === "review" ? (
           <CopyrightNotice sourceUrl={paper.sourceUrl} />
         ) : body ? (
-          <article className="bg-white px-8 py-12 md:px-16 md:py-20 shadow-xl border border-rule/60 rounded-sm prose-paper">
+          <article
+            ref={articleRef}
+            className="relative bg-white px-8 py-12 md:px-16 md:py-20 shadow-xl border border-rule/60 rounded-sm prose-paper"
+          >
             {body}
+            <SelectionAskPopup paper={paper} containerRef={articleRef} />
           </article>
         ) : (
           <div className="bg-white px-8 py-12 md:px-16 md:py-20 shadow-xl border border-rule/60 rounded-sm">

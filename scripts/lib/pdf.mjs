@@ -1,7 +1,8 @@
 // Best-effort PDF to readable HTML. Extracts text with pdfjs, detects a two
 // column gutter, recovers lines and reading order, joins lines into paragraphs
-// (with dehyphenation), and inserts missing word spaces. Math and complex layout
-// will not survive perfectly; this is a fallback for PDF-only papers.
+// (with dehyphenation), strips running headers/footers and page numbers, and
+// inserts missing word spaces. Math and complex layout will not survive
+// perfectly; this is a fallback for PDF-only papers.
 
 function escapeHtml(s) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -85,15 +86,36 @@ function headingTag(text, h, medianH) {
   const t = text.trim();
   if (t.length === 0 || t.length > 90) return null;
   const num = t.match(/^(\d+(?:\.\d+)*)\.?\s+\p{Lu}[\p{L}\s\-:,'&]+$/u);
-  if (num) return num[1].includes(".") ? "h3" : "h2";
-  if (/^(chapter|appendix|section)\s+[\dA-Za-z]/i.test(t)) return "h2";
+  if (num && t.length >= 6) return num[1].includes(".") ? "h3" : "h2";
+  // "Chapter 3" / "Appendix A" — set larger than the body, so a body line that
+  // merely opens with the word (or a wrapped TOC fragment) doesn't qualify.
   if (
-    /^(abstract|introduction|conclusions?|references|acknowledge?ments?|related work|discussion|background|methods?|experiments?|results?|preliminaries)\b/i.test(t) &&
-    t.length < 60
+    /^(chapter|appendix|section)\s+[\dA-Za-z]/i.test(t) &&
+    t.length < 60 &&
+    h > medianH * 1.15 &&
+    !/[.!?]\s/.test(t) &&
+    !/[.!?]$/.test(t)
   ) {
     return "h2";
   }
-  if (h > medianH * 1.18 && t.length < 55 && /^[\p{Lu}\p{N}]/u.test(t) && !/[.;:]$/.test(t)) {
+  // The usual named sections, only when the line is exactly the section word:
+  // a paragraph's final word wrapped onto its own line ("experiments.") or a
+  // sentence opening with one ("Results with tractable...") is body text.
+  if (
+    /^(abstract|introduction|conclusions?|references|acknowledge?ments?|related work|discussion|background|methods?|experiments?|results?|preliminaries|appendix|bibliography|preface|contents)$/i.test(t.replace(/:$/, "")) &&
+    /^\p{Lu}/u.test(t)
+  ) {
+    return "h2";
+  }
+  // Display equations also come out as short lines with tall glyphs, so the
+  // large-type rule refuses anything that looks like mathematics.
+  if (
+    h > medianH * 1.18 &&
+    t.length < 55 &&
+    /^[\p{Lu}\p{N}]/u.test(t) &&
+    !/[.;:,]$/.test(t) &&
+    !/[=+→←≤≥∑∏∫√−±·|]|\p{Script=Greek}/u.test(t)
+  ) {
     return "h3";
   }
   return null;
@@ -101,8 +123,7 @@ function headingTag(text, h, medianH) {
 
 function linesToBlocks(lines) {
   if (!lines.length) return [];
-  const body = lines.filter((l) => !/^\d{1,4}$/.test(l.text)); // drop page numbers
-  if (!body.length) return [];
+  const body = lines;
 
   const gaps = [];
   for (let i = 1; i < body.length; i++) gaps.push(body[i - 1].y - body[i].y);
@@ -130,12 +151,28 @@ function linesToBlocks(lines) {
     buf = [];
   };
 
+  let lastHeading = null;
   for (let i = 0; i < body.length; i++) {
     const line = body[i];
+    // A display-size title wrapped onto a second line ("1. Nature and
+    // Measurement of" / "Intelligence") continues the heading, not the body.
+    if (
+      lastHeading &&
+      line.h > medianH * 1.15 &&
+      Math.abs(line.h - lastHeading.h) < lastHeading.h * 0.15 &&
+      lastHeading.y - line.y < lastHeading.h * 1.8
+    ) {
+      lastHeading.block.text += ` ${line.text.trim()}`;
+      lastHeading.y = line.y;
+      continue;
+    }
+    lastHeading = null;
     const tag = headingTag(line.text, line.h, medianH);
     if (tag) {
       flush();
-      blocks.push({ tag, text: line.text.trim() });
+      const block = { tag, text: line.text.trim() };
+      blocks.push(block);
+      lastHeading = { block, h: line.h, y: line.y };
       continue;
     }
     const prev = body[i - 1];
@@ -147,11 +184,82 @@ function linesToBlocks(lines) {
       i > 0 &&
       line.x > leftMargin + line.h * 0.9 &&
       prev.x <= leftMargin + line.h * 0.9;
-    if (i > 0 && (gap > median * 1.6 || indented)) flush();
+    // Styles like ICLR's separate paragraphs with extra leading rather than an
+    // indent; the gap they use can be as little as ~1.4x the line spacing, so
+    // the threshold sits below that.
+    if (i > 0 && (gap > median * 1.35 || indented)) flush();
     buf.push(line.text);
   }
   flush();
   return blocks;
+}
+
+// Fraction of the page height treated as the header/footer band.
+const EDGE_BAND = 0.1;
+
+const isPageNumberText = (t) =>
+  /^\d{1,4}$/.test(t) || /^[ivxlcdm]{1,8}$/i.test(t);
+
+// Normalise a line for repeated header/footer matching: digits collapse so
+// "Chapter 3" on one page matches "Chapter 4" on the next.
+const headerKey = (t) => t.toLowerCase().replace(/\d+/g, "#").replace(/\s+/g, " ").trim();
+
+// Running headers and footers repeat at the same spot of the page across
+// several pages ("Published as a conference paper at ICLR 2017", "PREFACE",
+// page numbers). A book's headers change with each chapter, so three pages at
+// the same position is already conclusive; body text never repeats like that.
+function stripFurniture(pages) {
+  const yBucket = (y) => Math.round(y / 4);
+  const furnitureKey = (line) => `${headerKey(line.text)}@${yBucket(line.y)}`;
+  const pagesPerKey = new Map();
+  const pagesPerRow = new Map();
+  for (const page of pages) {
+    const seen = new Set();
+    for (const line of page.lines) {
+      if (!inEdgeBand(line, page)) continue;
+      for (const key of [furnitureKey(line), `row@${yBucket(line.y)}`]) {
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const map = key.startsWith("row@") ? pagesPerRow : pagesPerKey;
+        map.set(key, (map.get(key) ?? 0) + 1);
+      }
+    }
+  }
+  // A row occupied on most pages is a header/footer slot even when its text
+  // changes with each section — as long as the line sits clear of the body,
+  // so the first body line of a consistently-set page is never mistaken.
+  const minRowPages = Math.ceil(pages.length * 0.5);
+  for (const page of pages) {
+    const gaps = [];
+    for (let i = 1; i < page.lines.length; i++) {
+      gaps.push(page.lines[i - 1].y - page.lines[i].y);
+    }
+    const pos = gaps.filter((g) => g > 0).sort((a, b) => a - b);
+    const medianGap = pos[Math.floor(pos.length / 2)] || 12;
+    const detached = (i) => {
+      const line = page.lines[i];
+      const inward =
+        line.y > page.height / 2 ? page.lines[i + 1] : page.lines[i - 1];
+      return !inward || Math.abs(line.y - inward.y) > medianGap * 1.7;
+    };
+    page.lines = page.lines.filter((line, i) => {
+      if (!inEdgeBand(line, page)) return true;
+      if (isPageNumberText(line.text)) return false;
+      if ((pagesPerKey.get(furnitureKey(line)) ?? 0) >= 3) return false;
+      return (pagesPerRow.get(`row@${yBucket(line.y)}`) ?? 0) < minRowPages || !detached(i);
+    });
+  }
+}
+
+function inEdgeBand(line, page) {
+  return line.y > page.height * (1 - EDGE_BAND) || line.y < page.height * EDGE_BAND;
+}
+
+// A paragraph interrupted by a page break carries straight on: the last block
+// of a page merges into the next page's first block when it clearly ends
+// mid-sentence.
+function endsOpen(text) {
+  return !/[.!?:;'"’”)\]]$/.test(text);
 }
 
 export async function pdfToHtml(buffer) {
@@ -162,13 +270,16 @@ export async function pdfToHtml(buffer) {
     useSystemFonts: true,
   }).promise;
 
-  const allBlocks = [];
+  const pages = [];
   for (let n = 1; n <= doc.numPages; n++) {
     const page = await doc.getPage(n);
     const viewport = page.getViewport({ scale: 1 });
     const content = await page.getTextContent();
     const items = content.items
       .filter((it) => typeof it.str === "string" && it.str.trim() !== "")
+      // Rotated text is marginalia (the arXiv sidebar stamp), never body text;
+      // left in, it splices into whichever body line shares its y.
+      .filter((it) => Math.abs(it.transform[1]) < 0.5 && Math.abs(it.transform[2]) < 0.5)
       .map((it) => ({
         str: it.str,
         x: it.transform[4],
@@ -177,16 +288,39 @@ export async function pdfToHtml(buffer) {
         h: Math.abs(it.transform[3]) || it.height || 10,
       }));
     if (!items.length) continue;
-    const lines = itemsToLines(items);
-    const gutter = detect2ColGutter(lines, viewport.width);
+    pages.push({
+      lines: itemsToLines(items),
+      width: viewport.width,
+      height: viewport.height,
+    });
+  }
+
+  stripFurniture(pages);
+
+  const allBlocks = [];
+  for (const page of pages) {
+    if (!page.lines.length) continue;
+    const gutter = detect2ColGutter(page.lines, page.width);
+    let pageBlocks;
     if (gutter == null) {
-      allBlocks.push(...linesToBlocks(lines));
+      pageBlocks = linesToBlocks(page.lines);
     } else {
+      const items = page.lines.flatMap((l) => l.parts);
       const left = items.filter((it) => it.x + it.w / 2 < gutter);
       const right = items.filter((it) => it.x + it.w / 2 >= gutter);
-      allBlocks.push(...linesToBlocks(itemsToLines(left)));
-      allBlocks.push(...linesToBlocks(itemsToLines(right)));
+      pageBlocks = [
+        ...linesToBlocks(itemsToLines(left)),
+        ...linesToBlocks(itemsToLines(right)),
+      ];
     }
+    const prev = allBlocks[allBlocks.length - 1];
+    const first = pageBlocks[0];
+    if (prev?.tag === "p" && first?.tag === "p" && endsOpen(prev.text)) {
+      if (prev.text.endsWith("-")) prev.text = prev.text.slice(0, -1) + first.text;
+      else prev.text += " " + first.text;
+      pageBlocks.shift();
+    }
+    allBlocks.push(...pageBlocks);
   }
 
   const html = allBlocks
