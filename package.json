@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "node scripts/generate-seo.mjs --public && tsc && vite build && node scripts/generate-seo.mjs --prerender",
-    "preview": "vite preview",
+    "preview": "npm run build && wrangler dev",
     "check:emdash": "node scripts/check-emdash.mjs",
-    "fetch:papers": "node scripts/fetch-papers.mjs"
+    "fetch:papers": "node scripts/fetch-papers.mjs",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@fontsource/bungee-inline": "^5.2.8",
@@ -33,6 +34,7 @@
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.43.0",
     "@fontsource/inter": "^5.1.0",
     "@fontsource/newsreader": "^5.1.0",
     "@types/katex": "^0.16.7",
@@ -45,6 +47,7 @@
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2",
-    "vite": "^6.4.3"
+    "vite": "^6.4.3",
+    "wrangler": "^4.107.0"
   }
 }
