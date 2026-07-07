@@ -4,8 +4,8 @@ import Seo from "../components/Seo";
 import PaperSection from "../components/PaperSection";
 import { homeMeta } from "../lib/seo";
 import HeroWordmark from "../components/HeroWordmark";
-import LandingMotionToggle from "../components/LandingMotionToggle";
-import { LandingMotionProvider } from "../context/LandingMotionContext";
+import LandingDisplayControls from "../components/LandingDisplayControls";
+import { useBackgroundsHidden } from "../context/LandingMotionContext";
 import BottleneckBackground from "../components/BottleneckBackground";
 import CodeLengthBackground from "../components/CodeLengthBackground";
 import CoffeeAutomatonBackground from "../components/CoffeeAutomatonBackground";
@@ -79,6 +79,7 @@ const INSET = "absolute inset-0 h-full w-full";
 
 export default function Home() {
   const seo = useMemo(() => homeMeta(), []);
+  const backgroundsHidden = useBackgroundsHidden();
 
   // Snap on the landing page only: every scroll settles on the hero or a
   // paper (never between two), and a hard fling still has to pass through
@@ -93,43 +94,45 @@ export default function Home() {
   }, []);
 
   return (
-    <LandingMotionProvider>
-      {/* overflow-x-clip, not hidden: hidden would make <main> a scroll
-          container and capture the sections' snap points away from the page. */}
-      <main className="landing-paper min-h-screen overflow-x-clip">
-        <Seo {...seo} />
-        <LandingMotionToggle />
-        <header className="relative w-full snap-start px-4 pt-[max(1rem,env(safe-area-inset-top))] sm:px-0 sm:pt-0">
-          <h1 className="relative flex min-h-[17rem] h-[50vh] w-full items-center justify-center sm:block sm:h-[58vh] sm:min-h-[22rem]">
-            <span className="sr-only">30 papers</span>
+    <main className="landing-paper min-h-screen overflow-x-clip">
+      <Seo {...seo} />
+      <LandingDisplayControls />
+      <header className="relative w-full snap-start px-4 pt-[max(1rem,env(safe-area-inset-top))] sm:px-0 sm:pt-0">
+        <h1 className="relative flex min-h-[17rem] h-[50vh] w-full items-center justify-center sm:block sm:h-[58vh] sm:min-h-[22rem]">
+          <span className="sr-only">30 papers</span>
+          {backgroundsHidden ? (
+            <span className="title-extrude font-tech text-[15vw] font-bold leading-none tracking-tight text-cover sm:text-[5.5rem] md:text-[7rem]">
+              30 papers
+            </span>
+          ) : (
             <HeroWordmark />
-          </h1>
-          <div className="margin-plate mr-auto ml-0 mt-4 w-[min(24rem,100%)] text-pretty sm:ml-12 sm:mt-2 sm:w-[min(22rem,88vw)]">
-            <p className="font-serif text-sm leading-relaxed text-ink-soft">
-              This website is based on a rumoured list of papers that Ilya Sutskever gave to John Carmack. We currently
-              only have a list of 27. If you or anyone you know has the full, canonical list please{" "}
-              <a
-                href="https://michaelcrowley.dev"
-                className="text-cover underline decoration-from-font underline-offset-2 transition-colors hover:text-ink"
-              >
-                feel free to reach out
-              </a>
-              .
-            </p>
-          </div>
-        </header>
+          )}
+        </h1>
+        <div className="margin-plate mr-auto ml-0 mt-4 w-[min(24rem,100%)] text-pretty sm:ml-12 sm:mt-2 sm:w-[min(22rem,88vw)]">
+          <p className="font-serif text-sm leading-relaxed text-ink-soft">
+            This website is based on a rumoured list of papers that Ilya Sutskever gave to John Carmack. We currently
+            only have a list of 27. If you or anyone you know has the full, canonical list please{" "}
+            <a
+              href="https://michaelcrowley.dev"
+              className="text-cover underline decoration-from-font underline-offset-2 transition-colors hover:text-ink"
+            >
+              feel free to reach out
+            </a>
+            .
+          </p>
+        </div>
+      </header>
 
-        {papers.map((paper) => {
-          const Background = BACKGROUNDS[paper.slug];
-          return (
-            <PaperSection
-              key={paper.slug}
-              paper={paper}
-              background={<Background className={INSET} />}
-            />
-          );
-        })}
-      </main>
-    </LandingMotionProvider>
+      {papers.map((paper) => {
+        const Background = BACKGROUNDS[paper.slug];
+        return (
+          <PaperSection
+            key={paper.slug}
+            paper={paper}
+            background={backgroundsHidden ? null : <Background className={INSET} />}
+          />
+        );
+      })}
+    </main>
   );
 }

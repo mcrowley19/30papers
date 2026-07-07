@@ -616,3 +616,7 @@ html[data-landing-static="true"] .landing-paper *::after {
   transition-duration: 0.001ms !important;
   scroll-behavior: auto !important;
 }
+
+html[data-hide-backgrounds="true"] canvas[aria-hidden="true"] {
+  display: none !important;
+}

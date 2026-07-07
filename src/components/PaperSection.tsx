@@ -51,7 +51,7 @@ export default function PaperSection({
   background,
 }: {
   paper: Paper;
-  background: ReactNode;
+  background: ReactNode | null;
 }) {
   const [imgFailed, setImgFailed] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -119,8 +119,6 @@ export default function PaperSection({
       className="relative flex min-h-screen snap-start lg:snap-center lg:snap-always items-center justify-center overflow-hidden px-4 py-8 sm:px-6 lg:px-0 lg:py-0"
     >
       {background}
-
-      {/* Contributors, on a small marginalia plate left of the thumbnail. */}
       <div
         ref={leftRef}
         className="margin-plate pointer-events-none absolute left-6 top-[42%] z-10 hidden w-[16rem] -translate-y-1/2 opacity-0 lg:block xl:left-14"

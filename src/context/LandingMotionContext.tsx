@@ -6,45 +6,72 @@ import {
   type ReactNode,
 } from "react";
 
-const STORAGE_KEY = "30papers-landing-static";
+const STATIC_STORAGE_KEY = "30papers-landing-static";
+const BACKGROUNDS_STORAGE_KEY = "30papers-hide-backgrounds";
 
 type LandingMotionContextValue = {
   staticMode: boolean;
   toggle: () => void;
+  backgroundsHidden: boolean;
+  toggleBackgrounds: () => void;
 };
 
 const LandingMotionContext = createContext<LandingMotionContextValue>({
   staticMode: false,
   toggle: () => {},
+  backgroundsHidden: false,
+  toggleBackgrounds: () => {},
 });
 
-function readStoredStaticMode() {
+function readStoredFlag(key: string) {
   try {
-    return localStorage.getItem(STORAGE_KEY) === "1";
+    return localStorage.getItem(key) === "1";
   } catch {
     return false;
   }
 }
 
 export function LandingMotionProvider({ children }: { children: ReactNode }) {
-  const [staticMode, setStaticMode] = useState(readStoredStaticMode);
+  const [staticMode, setStaticMode] = useState(() => readStoredFlag(STATIC_STORAGE_KEY));
+  const [backgroundsHidden, setBackgroundsHidden] = useState(() =>
+    readStoredFlag(BACKGROUNDS_STORAGE_KEY)
+  );
 
   useLayoutEffect(() => {
     document.documentElement.toggleAttribute("data-landing-static", staticMode);
     try {
-      localStorage.setItem(STORAGE_KEY, staticMode ? "1" : "0");
+      localStorage.setItem(STATIC_STORAGE_KEY, staticMode ? "1" : "0");
+    } catch {
+      // Ignore private browsing quota errors.
+    }
+  }, [staticMode]);
+
+  useLayoutEffect(() => {
+    document.documentElement.toggleAttribute("data-hide-backgrounds", backgroundsHidden);
+    try {
+      localStorage.setItem(BACKGROUNDS_STORAGE_KEY, backgroundsHidden ? "1" : "0");
     } catch {
       // Ignore private browsing quota errors.
     }
     return () => {
-      document.documentElement.removeAttribute("data-landing-static");
+      document.documentElement.removeAttribute("data-hide-backgrounds");
     };
-  }, [staticMode]);
+  }, [backgroundsHidden]);
+
+  useLayoutEffect(
+    () => () => {
+      document.documentElement.removeAttribute("data-landing-static");
+    },
+    []
+  );
 
   const toggle = () => setStaticMode((on) => !on);
+  const toggleBackgrounds = () => setBackgroundsHidden((on) => !on);
 
   return (
-    <LandingMotionContext.Provider value={{ staticMode, toggle }}>
+    <LandingMotionContext.Provider
+      value={{ staticMode, toggle, backgroundsHidden, toggleBackgrounds }}
+    >
       {children}
     </LandingMotionContext.Provider>
   );
@@ -56,4 +83,8 @@ export function useLandingMotion() {
 
 export function useLandingStatic() {
   return useContext(LandingMotionContext).staticMode;
+}
+
+export function useBackgroundsHidden() {
+  return useContext(LandingMotionContext).backgroundsHidden;
 }

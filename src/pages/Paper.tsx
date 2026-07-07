@@ -7,6 +7,7 @@ import { paperBySlug } from "../data/papers";
 import { loadPaperContent, type PaperContent } from "../lib/content";
 import { renderWithTerms } from "../lib/renderWithTerms";
 import { useTermPanel } from "../context/TermPanelContext";
+import { useBackgroundsHidden } from "../context/LandingMotionContext";
 import { paperMeta } from "../lib/seo";
 import NotFound from "./NotFound";
 import BottleneckBackground from "../components/BottleneckBackground";
@@ -81,6 +82,7 @@ export default function Paper() {
   const { slug = "" } = useParams();
   const paper = paperBySlug(slug);
   const { activeTerm, closeTerm } = useTermPanel();
+  const backgroundsHidden = useBackgroundsHidden();
 
   const [content, setContent] = useState<PaperContent | null>(null);
   const [loading, setLoading] = useState(true);
@@ -135,7 +137,7 @@ export default function Paper() {
       <ReadingProgress targetRef={articleRef} />
       {/* Monograph/Landing page inspired hero header */}
       <div className="relative w-full overflow-hidden border-b border-rule bg-white py-8 sm:py-16">
-        {Background && (
+        {Background && !backgroundsHidden && (
           <Background className="pointer-events-none absolute inset-0 h-full w-full opacity-60" />
         )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/80 to-white/30" />
