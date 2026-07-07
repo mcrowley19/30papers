@@ -195,9 +195,9 @@ export default function Paper() {
         </header>
       </div>
 
-      <div className="mx-auto w-full max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-5xl px-3 py-8 sm:px-6 sm:py-12 lg:px-8">
         {loading ? (
-          <div className="bg-white px-8 py-12 md:px-16 md:py-20 shadow-xl border border-rule/60 rounded-sm">
+          <div className="rounded-sm border border-rule/60 bg-white px-5 py-8 shadow-xl sm:px-8 sm:py-12 md:px-16 md:py-20">
             <ReaderSkeleton />
           </div>
         ) : paper.risk === "review" ? (
@@ -205,13 +205,13 @@ export default function Paper() {
         ) : body ? (
           <article
             ref={articleRef}
-            className="relative bg-white px-8 py-12 md:px-16 md:py-20 shadow-xl border border-rule/60 rounded-sm prose-paper"
+            className="prose-paper relative rounded-sm border border-rule/60 bg-white px-5 py-8 shadow-xl sm:px-8 sm:py-12 md:px-16 md:py-20"
           >
             {body}
             <SelectionAskPopup paper={paper} containerRef={articleRef} />
           </article>
         ) : (
-          <div className="bg-white px-8 py-12 md:px-16 md:py-20 shadow-xl border border-rule/60 rounded-sm">
+          <div className="rounded-sm border border-rule/60 bg-white px-5 py-8 shadow-xl sm:px-8 sm:py-12 md:px-16 md:py-20">
             <ComingSoon sourceUrl={paper.sourceUrl} />
           </div>
         )}

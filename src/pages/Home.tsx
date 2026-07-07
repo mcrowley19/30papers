@@ -83,7 +83,8 @@ export default function Home() {
   // each section, so nothing gets skipped by accident.
   useEffect(() => {
     const root = document.documentElement;
-    root.style.scrollSnapType = "y mandatory";
+    const desktop = window.matchMedia("(min-width: 1024px)").matches;
+    root.style.scrollSnapType = desktop ? "y mandatory" : "y proximity";
     return () => {
       root.style.scrollSnapType = "";
     };
@@ -94,12 +95,12 @@ export default function Home() {
     // container and capture the sections' snap points away from the page.
     <main className="landing-paper min-h-screen overflow-x-clip">
       <Seo {...seo} />
-      <header className="relative w-full snap-start">
+      <header className="relative w-full snap-start px-4 sm:px-0">
         <h1 className="relative block h-[42vh] min-h-[16rem] w-full sm:h-[58vh]">
           <span className="sr-only">30 papers</span>
           <TitleAscii className="absolute inset-0 h-full w-full" />
         </h1>
-        <div className="margin-plate mr-auto ml-6 mt-2 w-[min(22rem,88vw)] text-pretty sm:ml-12">
+        <div className="margin-plate mr-auto ml-0 mt-2 w-[min(24rem,100%)] text-pretty sm:ml-12 sm:w-[min(22rem,88vw)]">
           <p className="font-serif text-sm leading-relaxed text-ink-soft">
             This website is based on a rumoured list of papers that Ilya Sutskever gave to John Carmack. We currently
             only have a list of 27. If you or anyone you know has the full, canonical list please{" "}

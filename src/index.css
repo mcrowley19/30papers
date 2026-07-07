@@ -69,6 +69,12 @@
     padding: 1.5rem 1.6rem;
   }
 
+  @media (max-width: 639px) {
+    .margin-plate {
+      padding: 1rem 1.05rem;
+    }
+  }
+
   /* ------------------------------------------------------------------ *
    * Paper reader. The goal is fidelity to the source: arXiv papers come
    * in as LaTeXML HTML (ltx_* classes) and are set exactly like the

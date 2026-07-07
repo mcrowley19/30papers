@@ -21,6 +21,22 @@ function ContributorAvatar({ slug, name, initials }: Contributor) {
   );
 }
 
+function ContributorChip({ slug, name, initials }: Contributor) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-rule/80 bg-white/90 px-2.5 py-1.5 shadow-sm">
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white ring-1 ring-cover/35">
+        {!failed ? (
+          <img src={`/contributors/${slug}.jpg`} alt={name} onError={() => setFailed(true)} className="h-full w-full object-cover" />
+        ) : (
+          <span className="font-serif text-xs font-bold text-cover">{initials}</span>
+        )}
+      </span>
+      <span className="font-serif text-xs leading-none text-ink">{name}</span>
+    </span>
+  );
+}
+
 /**
  * A full-viewport section for one paper: an animated ASCII backdrop (passed in,
  * one per paper) with the paper's thumbnail on top of it. As the section
@@ -99,7 +115,7 @@ export default function PaperSection({
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen snap-center snap-always items-center justify-center overflow-hidden"
+      className="relative flex min-h-screen snap-start lg:snap-center lg:snap-always items-center justify-center overflow-hidden px-4 py-8 sm:px-6 lg:px-0 lg:py-0"
     >
       {background}
 
@@ -139,10 +155,10 @@ export default function PaperSection({
         <p className="mt-4 font-serif text-sm leading-relaxed text-ink-soft">{paper.blurb}</p>
       </div>
 
-      <Link to={`/papers/${paper.slug}`} className="group relative z-10 block">
+      <Link to={`/papers/${paper.slug}`} className="group relative z-10 block w-full max-w-[22rem] sm:max-w-sm lg:w-auto lg:max-w-none">
         <div
           ref={thumbRef}
-          className="relative aspect-[3/4] h-[82vh] overflow-hidden bg-neutral-100 shadow-2xl ring-1 ring-ink/10 transition-[box-shadow,filter] duration-300 group-hover:shadow-[0_32px_64px_-24px_rgba(16,31,92,0.45)] group-hover:brightness-[1.02] will-change-transform"
+          className="relative aspect-[3/4] h-[60vh] max-h-[36rem] min-h-[22rem] overflow-hidden bg-neutral-100 shadow-2xl ring-1 ring-ink/10 transition-[box-shadow,filter] duration-300 group-hover:shadow-[0_32px_64px_-24px_rgba(16,31,92,0.45)] group-hover:brightness-[1.02] will-change-transform sm:h-[68vh] lg:h-[82vh] lg:max-h-none lg:min-h-0"
         >
           {!imgFailed ? (
             <img
@@ -160,6 +176,21 @@ export default function PaperSection({
           )}
         </div>
       </Link>
+
+      <div className="margin-plate pointer-events-none absolute bottom-6 left-1/2 z-10 w-[min(24rem,calc(100%-2rem))] -translate-x-1/2 lg:hidden">
+        <h2 className="font-serif text-xl leading-tight text-cover">{paper.title}</h2>
+        <p className="mt-3 font-serif text-sm leading-relaxed text-ink-soft">{paper.blurb}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {credit.shown.slice(0, 2).map((person) => (
+            <ContributorChip key={person.slug} {...person} />
+          ))}
+          {more && (
+            <span className="inline-flex items-center rounded-full border border-rule/80 bg-white/90 px-2.5 py-1.5 font-serif text-xs text-ink">
+              {credit.openEnded ? "Plus many more" : `Plus ${credit.extra} more`}
+            </span>
+          )}
+        </div>
+      </div>
     </section>
   );
 }
