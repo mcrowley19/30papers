@@ -3,7 +3,7 @@ import { papers } from "../data/papers";
 import Seo from "../components/Seo";
 import PaperSection from "../components/PaperSection";
 import { homeMeta } from "../lib/seo";
-import TitleAscii from "../components/TitleAscii";
+import HeroWordmark from "../components/HeroWordmark";
 import BottleneckBackground from "../components/BottleneckBackground";
 import CodeLengthBackground from "../components/CodeLengthBackground";
 import CoffeeAutomatonBackground from "../components/CoffeeAutomatonBackground";
@@ -95,12 +95,12 @@ export default function Home() {
     // container and capture the sections' snap points away from the page.
     <main className="landing-paper min-h-screen overflow-x-clip">
       <Seo {...seo} />
-      <header className="relative w-full snap-start px-4 sm:px-0">
-        <h1 className="relative block h-[48vh] min-h-[18rem] w-full sm:h-[58vh]">
+      <header className="relative w-full snap-start px-4 pt-[max(1rem,env(safe-area-inset-top))] sm:px-0 sm:pt-0">
+        <h1 className="relative flex min-h-[17rem] h-[50vh] w-full items-center justify-center sm:block sm:h-[58vh] sm:min-h-[22rem]">
           <span className="sr-only">30 papers</span>
-          <TitleAscii className="absolute inset-0 h-full w-full" />
+          <HeroWordmark />
         </h1>
-        <div className="margin-plate mr-auto ml-0 mt-2 w-[min(24rem,100%)] text-pretty sm:ml-12 sm:w-[min(22rem,88vw)]">
+        <div className="margin-plate mr-auto ml-0 mt-4 w-[min(24rem,100%)] text-pretty sm:ml-12 sm:mt-2 sm:w-[min(22rem,88vw)]">
           <p className="font-serif text-sm leading-relaxed text-ink-soft">
             This website is based on a rumoured list of papers that Ilya Sutskever gave to John Carmack. We currently
             only have a list of 27. If you or anyone you know has the full, canonical list please{" "}
