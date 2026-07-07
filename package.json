@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "check:emdash": "node scripts/check-emdash.mjs",
     "fetch:papers": "node scripts/fetch-papers.mjs",
-    "capture:wordmark": "node scripts/capture-wordmark.mjs"
+    "capture:wordmark": "node scripts/capture-wordmark.mjs",
+    "convert:math": "node scripts/convert-math.mjs"
   },
   "dependencies": {
     "@fontsource/bungee-inline": "^5.2.8",

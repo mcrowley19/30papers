@@ -1,4 +1,4 @@
-import { useEffect, useMemo, type ComponentType } from "react";
+import { useMemo, type ComponentType } from "react";
 import { papers } from "../data/papers";
 import Seo from "../components/Seo";
 import PaperSection from "../components/PaperSection";
@@ -81,23 +81,11 @@ export default function Home() {
   const seo = useMemo(() => homeMeta(), []);
   const backgroundsHidden = useBackgroundsHidden();
 
-  // Snap on the landing page only: every scroll settles on the hero or a
-  // paper (never between two), and a hard fling still has to pass through
-  // each section, so nothing gets skipped by accident.
-  useEffect(() => {
-    const root = document.documentElement;
-    const desktop = window.matchMedia("(min-width: 1024px)").matches;
-    root.style.scrollSnapType = desktop ? "y mandatory" : "y proximity";
-    return () => {
-      root.style.scrollSnapType = "";
-    };
-  }, []);
-
   return (
     <main className="landing-paper min-h-screen overflow-x-clip">
       <Seo {...seo} />
       <LandingDisplayControls />
-      <header className="relative w-full snap-start px-4 pt-[max(1rem,env(safe-area-inset-top))] sm:px-0 sm:pt-0">
+      <header className="relative w-full px-4 pt-[max(1rem,env(safe-area-inset-top))] sm:px-0 sm:pt-0">
         <h1 className="relative flex min-h-[17rem] h-[50vh] w-full items-center justify-center sm:block sm:h-[58vh] sm:min-h-[22rem]">
           <span className="sr-only">30 papers</span>
           {backgroundsHidden ? (

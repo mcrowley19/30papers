@@ -90,10 +90,10 @@ export default function FieldBackground({
 
     let raf = 0;
     let last = 0;
-    let running = true;
+    let running = false;
     function loop(tms: number) {
       if (!running) return;
-      if (tms - last >= 33) {
+      if (tms - last >= 50) {
         frame(tms);
         last = tms;
       }
@@ -109,14 +109,7 @@ export default function FieldBackground({
     // both are ready so the title mask is not built from an empty canvas.
     redraw();
     requestAnimationFrame(redraw);
-    void document.fonts?.ready.then(() => {
-      redraw();
-      if (!reduce) {
-        last = 0;
-        raf = requestAnimationFrame(loop);
-      }
-    });
-    if (!reduce) raf = requestAnimationFrame(loop);
+    void document.fonts?.ready.then(redraw);
 
     const ro = new ResizeObserver(() => {
       redraw();
@@ -136,7 +129,9 @@ export default function FieldBackground({
           cancelAnimationFrame(raf);
         }
       },
-      { threshold: 0 }
+      // Only animate the section in the middle of the viewport, not every
+      // section that barely clips the edge while scrolling.
+      { threshold: 0.2, rootMargin: "-20% 0px -20% 0px" }
     );
     io.observe(canvas);
 

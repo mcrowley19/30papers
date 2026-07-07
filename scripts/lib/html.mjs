@@ -93,6 +93,43 @@ function renderMath($, root) {
     });
 }
 
+/** arXiv / ar5iv MathML → KaTeX. React cannot render MathML in the HTML namespace. */
+function convertMathMLToKatex($, root) {
+  root.find("math").each((_, el) => {
+    const $el = $(el);
+    const tex =
+      $el.find('annotation[encoding="application/x-tex"]').first().text().trim() ||
+      ($el.attr("alttext") ?? "").trim();
+    if (!tex) return;
+    const display = $el.attr("display") === "block";
+    $el.replaceWith(renderTex(tex, display));
+  });
+}
+
+/** Pandoc / Jupyter HTML: <span class="math inline|display">…</span> */
+function convertPandocMath($, root) {
+  root.find("span.math").each((_, el) => {
+    const $el = $(el);
+    const tex = $el.text().trim();
+    if (!tex) return;
+    const display = $el.hasClass("display");
+    $el.replaceWith(renderTex(tex, display));
+  });
+}
+
+/**
+ * Render all math in an already-ingested paper fragment to KaTeX HTML.
+ * Safe to run repeatedly (idempotent on KaTeX output).
+ */
+export function postprocessMathInHtml(html) {
+  const $ = cheerio.load(html, null, false);
+  const root = $.root();
+  convertMathMLToKatex($, root);
+  convertPandocMath($, root);
+  renderMath($, root);
+  return root.html() ?? html;
+}
+
 const JUNK_SELECTORS = [
   "script",
   "style",
@@ -216,8 +253,11 @@ export async function cleanAndLocalize(rawHtml, { slug, baseUrl, mode, selectors
     }
   });
 
-  // Blogs typeset math with MathJax delimiters; render them to KaTeX so they do
-  // not show as raw LaTeX. arXiv papers already arrive as MathML.
+  // MathML and raw LaTeX do not survive React's HTML parser with correct layout.
+  // Render everything to KaTeX so subscripts, superscripts, and display math read
+  // correctly in every browser.
+  convertMathMLToKatex($, container);
+  convertPandocMath($, container);
   if (mode !== "arxiv") renderMath($, container);
 
   return { html: (container.html() ?? "").trim(), images: imageCount };

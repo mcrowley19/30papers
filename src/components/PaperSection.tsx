@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { Paper } from "../data/papers";
 import { creditFor, type Contributor } from "../data/contributors";
-import { useMotionReduced } from "../lib/useMotionReduced";
 
 function ContributorAvatar({ slug, name, initials }: Contributor) {
   const [failed, setFailed] = useState(false);
@@ -39,12 +38,8 @@ function ContributorChip({ slug, name, initials }: Contributor) {
 }
 
 /**
- * A full-viewport section for one paper: an animated ASCII backdrop (passed in,
- * one per paper) with the paper's thumbnail on top of it. As the section
- * scrolls toward the viewport center the thumbnail eases back a little,
- * letting the backdrop's detail read, while side panels fade in: the paper
- * title and blurb on the right, the contributors on the left. The backdrop
- * itself stays visible throughout.
+ * A full-viewport section for one paper: an ASCII backdrop with the paper's
+ * thumbnail on top, title and blurb on the right, contributors on the left.
  */
 export default function PaperSection({
   paper,
@@ -54,57 +49,6 @@ export default function PaperSection({
   background: ReactNode | null;
 }) {
   const [imgFailed, setImgFailed] = useState(false);
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const thumbRef = useRef<HTMLDivElement | null>(null);
-  const leftRef = useRef<HTMLDivElement | null>(null);
-  const rightRef = useRef<HTMLDivElement | null>(null);
-  const reduced = useMotionReduced();
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    let raf = 0;
-
-    const apply = () => {
-      raf = 0;
-      const rect = section.getBoundingClientRect();
-      const viewCenter = window.innerHeight / 2;
-      const offCenter = Math.abs(rect.top + rect.height / 2 - viewCenter);
-      // 1 when the section sits at the viewport center, 0 a bit past a
-      // half-viewport away. Eased so the focus settles gently.
-      const raw = Math.max(0, 1 - offCenter / (window.innerHeight * 0.55));
-      const t = reduced ? 1 : raw * raw * (3 - 2 * raw);
-      // The plates hold back until the paper is nearly focused, then arrive
-      // quickly: at partial opacity their text would ghost over the backdrop.
-      const pRaw = Math.max(0, Math.min(1, (raw - 0.45) / 0.4));
-      const p = reduced ? 1 : pRaw * pRaw * (3 - 2 * pRaw);
-
-      if (thumbRef.current) {
-        thumbRef.current.style.transform = `scale(${1.04 - 0.16 * t})`;
-      }
-      for (const [el, dir] of [
-        [leftRef.current, -1],
-        [rightRef.current, 1],
-      ] as const) {
-        if (!el) continue;
-        el.style.opacity = String(p);
-        el.style.transform = reduced ? "none" : `translateX(${dir * 18 * (1 - p)}px)`;
-      }
-    };
-
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(apply);
-    };
-    apply();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [reduced]);
 
   const credit = creditFor(paper);
   const more = credit.openEnded
@@ -114,14 +58,11 @@ export default function PaperSection({
       : null;
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative flex min-h-screen snap-start lg:snap-center lg:snap-always items-center justify-center overflow-hidden px-4 py-8 sm:px-6 lg:px-0 lg:py-0"
-    >
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8 sm:px-6 lg:px-0 lg:py-0">
       {background}
+
       <div
-        ref={leftRef}
-        className="margin-plate pointer-events-none absolute left-6 top-[42%] z-10 hidden w-[16rem] -translate-y-1/2 opacity-0 lg:block xl:left-14"
+        className="margin-plate pointer-events-none absolute left-6 top-[42%] z-10 hidden w-[16rem] -translate-y-1/2 lg:block xl:left-14"
         aria-hidden="true"
       >
         <p className="font-serif text-xs uppercase tracking-[0.25em] text-muted">
@@ -145,20 +86,13 @@ export default function PaperSection({
         </ul>
       </div>
 
-      {/* Title and description, on a plate right of the thumbnail. */}
-      <div
-        ref={rightRef}
-        className="margin-plate pointer-events-none absolute right-6 top-[42%] z-10 hidden w-[18rem] -translate-y-1/2 opacity-0 lg:block xl:right-14 xl:w-[20rem]"
-      >
+      <div className="margin-plate pointer-events-none absolute right-6 top-[42%] z-10 hidden w-[18rem] -translate-y-1/2 lg:block xl:right-14 xl:w-[20rem]">
         <h2 className="font-serif text-2xl leading-tight text-cover">{paper.title}</h2>
         <p className="mt-4 font-serif text-sm leading-relaxed text-ink-soft">{paper.blurb}</p>
       </div>
 
       <Link to={`/papers/${paper.slug}`} className="group relative z-10 block w-full max-w-[22rem] sm:max-w-sm lg:w-auto lg:max-w-none">
-        <div
-          ref={thumbRef}
-          className="relative aspect-[3/4] h-[60vh] max-h-[36rem] min-h-[22rem] overflow-hidden bg-neutral-100 shadow-2xl ring-1 ring-ink/10 transition-[box-shadow,filter] duration-300 group-hover:shadow-[0_32px_64px_-24px_rgba(16,31,92,0.45)] group-hover:brightness-[1.02] will-change-transform sm:h-[68vh] lg:h-[82vh] lg:max-h-none lg:min-h-0"
-        >
+        <div className="relative aspect-[3/4] h-[60vh] max-h-[36rem] min-h-[22rem] overflow-hidden bg-neutral-100 shadow-2xl ring-1 ring-ink/10 transition-[box-shadow,filter] duration-300 group-hover:shadow-[0_32px_64px_-24px_rgba(16,31,92,0.45)] group-hover:brightness-[1.02] sm:h-[68vh] lg:h-[82vh] lg:max-h-none lg:min-h-0">
           {!imgFailed ? (
             <img
               src={`/thumbnails/${paper.slug}.webp`}

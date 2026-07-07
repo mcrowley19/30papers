@@ -203,6 +203,9 @@
     padding: 0;
   }
   /* Long display equations scroll instead of forcing page-wide overflow. */
+  .prose-paper .katex {
+    font-size: 1.05em;
+  }
   .prose-paper .katex-display {
     overflow-x: auto;
     overflow-y: hidden;

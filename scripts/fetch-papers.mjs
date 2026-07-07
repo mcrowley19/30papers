@@ -66,6 +66,12 @@ async function ingestArxiv(src) {
     });
     html = cleaned.html;
     images = cleaned.images;
+    // ar5iv sometimes serves a plain-text fallback with no math or figures.
+    const mathCount = (raw.match(/ltx_Math/g) || []).length;
+    if (mathCount < 3 && images === 0) {
+      html = "";
+      images = 0;
+    }
   }
 
   // Some papers have no HTML edition (ar5iv conversion failed and arxiv has no

@@ -125,6 +125,17 @@ export default function Paper() {
     return renderWithTerms(content.html, content.terms);
   }, [content]);
 
+  const pdfExtracted = useMemo(() => {
+    const html = content?.html;
+    if (!html) return false;
+    return (
+      !html.includes("katex") &&
+      !html.includes('class="math ') &&
+      !html.includes("ltx_Math") &&
+      !html.includes("ltx_document")
+    );
+  }, [content?.html]);
+
   const seo = useMemo(() => (paper ? paperMeta(paper) : null), [paper]);
 
   if (!paper) return <NotFound />;
@@ -211,6 +222,7 @@ export default function Paper() {
             ref={articleRef}
             className="prose-paper reader-sheet relative sm:rounded-sm sm:border sm:border-rule/60 sm:bg-white sm:px-8 sm:py-12 sm:shadow-xl md:px-16 md:py-20"
           >
+            {pdfExtracted && <PdfExtractNotice sourceUrl={paper.sourceUrl} />}
             {body}
             <SelectionAskPopup paper={paper} containerRef={articleRef} />
           </article>
@@ -221,6 +233,23 @@ export default function Paper() {
         )}
       </div>
     </main>
+  );
+}
+
+function PdfExtractNotice({ sourceUrl }: { sourceUrl: string }) {
+  return (
+    <div className="mb-8 rounded-md border border-rule bg-paper-raised px-4 py-3 font-sans text-sm leading-relaxed text-ink-soft">
+      This text was extracted from a PDF. Equations, figures, and tables may not display correctly here.{" "}
+      <a
+        href={sourceUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-accent underline decoration-from-font underline-offset-2 hover:text-accent-deep"
+      >
+        Read the original for the full formatting
+      </a>
+      .
+    </div>
   );
 }
 
