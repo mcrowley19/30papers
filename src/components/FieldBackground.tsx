@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { CELL, DARK_REMAP, DOTS, glyphFor } from "../lib/ascii";
+import { useMotionReduced } from "../lib/useMotionReduced";
 
 /**
  * Shared engine for the paper backdrops. Handles canvas sizing, the ~30fps
@@ -37,6 +38,7 @@ export default function FieldBackground({
   dark?: boolean;
 }) {
   const ref = useRef<HTMLCanvasElement | null>(null);
+  const reduced = useMotionReduced();
 
   useEffect(() => {
     const canvas = ref.current;
@@ -44,7 +46,7 @@ export default function FieldBackground({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = reduced;
     const cell = cellProp;
     let cols = 0;
     let rows = 0;
@@ -144,7 +146,7 @@ export default function FieldBackground({
       ro.disconnect();
       io.disconnect();
     };
-  }, [draw, cellProp, dark]);
+  }, [draw, cellProp, dark, reduced]);
 
   return <canvas ref={ref} className={`block ${className}`} aria-hidden="true" />;
 }

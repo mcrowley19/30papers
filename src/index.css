@@ -605,3 +605,14 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Landing-page toggle: same treatment as the system preference above. */
+html[data-landing-static="true"] .landing-paper,
+html[data-landing-static="true"] .landing-paper *,
+html[data-landing-static="true"] .landing-paper *::before,
+html[data-landing-static="true"] .landing-paper *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}

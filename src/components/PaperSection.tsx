@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import type { Paper } from "../data/papers";
 import { creditFor, type Contributor } from "../data/contributors";
+import { useMotionReduced } from "../lib/useMotionReduced";
 
 function ContributorAvatar({ slug, name, initials }: Contributor) {
   const [failed, setFailed] = useState(false);
@@ -57,12 +58,12 @@ export default function PaperSection({
   const thumbRef = useRef<HTMLDivElement | null>(null);
   const leftRef = useRef<HTMLDivElement | null>(null);
   const rightRef = useRef<HTMLDivElement | null>(null);
+  const reduced = useMotionReduced();
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     let raf = 0;
 
     const apply = () => {
@@ -73,11 +74,11 @@ export default function PaperSection({
       // 1 when the section sits at the viewport center, 0 a bit past a
       // half-viewport away. Eased so the focus settles gently.
       const raw = Math.max(0, 1 - offCenter / (window.innerHeight * 0.55));
-      const t = reduced.matches ? 1 : raw * raw * (3 - 2 * raw);
+      const t = reduced ? 1 : raw * raw * (3 - 2 * raw);
       // The plates hold back until the paper is nearly focused, then arrive
       // quickly: at partial opacity their text would ghost over the backdrop.
       const pRaw = Math.max(0, Math.min(1, (raw - 0.45) / 0.4));
-      const p = reduced.matches ? 1 : pRaw * pRaw * (3 - 2 * pRaw);
+      const p = reduced ? 1 : pRaw * pRaw * (3 - 2 * pRaw);
 
       if (thumbRef.current) {
         thumbRef.current.style.transform = `scale(${1.04 - 0.16 * t})`;
@@ -88,7 +89,7 @@ export default function PaperSection({
       ] as const) {
         if (!el) continue;
         el.style.opacity = String(p);
-        el.style.transform = reduced.matches ? "none" : `translateX(${dir * 18 * (1 - p)}px)`;
+        el.style.transform = reduced ? "none" : `translateX(${dir * 18 * (1 - p)}px)`;
       }
     };
 
@@ -103,7 +104,7 @@ export default function PaperSection({
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [reduced]);
 
   const credit = creditFor(paper);
   const more = credit.openEnded

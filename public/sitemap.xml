@@ -6,42 +6,17 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://30papers.com/papers/variational-lossy-autoencoder</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://30papers.com/papers/keeping-neural-networks-simple</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://30papers.com/papers/coffee-automaton</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://30papers.com/papers/first-law-of-complexodynamics</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://30papers.com/papers/kolmogorov-complexity</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://30papers.com/papers/mdl-principle-tutorial</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://30papers.com/papers/machine-super-intelligence</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://30papers.com/papers/cs231n</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/unreasonable-effectiveness-of-rnns</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/understanding-lstms</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -71,47 +46,12 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://30papers.com/papers/unreasonable-effectiveness-of-rnns</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://30papers.com/papers/understanding-lstms</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://30papers.com/papers/deep-speech-2</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://30papers.com/papers/annotated-transformer</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://30papers.com/papers/relational-reasoning</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://30papers.com/papers/neural-turing-machines</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://30papers.com/papers/order-matters</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://30papers.com/papers/relational-recurrent-networks</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://30papers.com/papers/attention-is-all-you-need</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -122,6 +62,31 @@
   </url>
   <url>
     <loc>https://30papers.com/papers/pointer-networks</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/attention-is-all-you-need</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/annotated-transformer</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/neural-turing-machines</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/relational-reasoning</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/relational-recurrent-networks</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -137,6 +102,41 @@
   </url>
   <url>
     <loc>https://30papers.com/papers/gpipe</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/keeping-neural-networks-simple</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/mdl-principle-tutorial</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/first-law-of-complexodynamics</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/coffee-automaton</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/kolmogorov-complexity</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/variational-lossy-autoencoder</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://30papers.com/papers/machine-super-intelligence</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { CELL } from "../lib/ascii";
+import { useMotionReduced } from "../lib/useMotionReduced";
 
 /**
  * Halftone ASCII backdrop for "The Coffee Automaton" (Aaronson, Carroll &
@@ -35,6 +36,7 @@ export default function CoffeeAutomatonBackground({
   dark?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const reduced = useMotionReduced();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -42,7 +44,7 @@ export default function CoffeeAutomatonBackground({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = reduced;
     const cell = CELL; // shared grid so all backdrops read as one continuation
     let cols = 0;
     let rows = 0;
@@ -261,7 +263,7 @@ export default function CoffeeAutomatonBackground({
       ro.disconnect();
       io.disconnect();
     };
-  }, [dark]);
+  }, [dark, reduced]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { CELL, BLUE, ACCENT, DARK_REMAP } from "../lib/ascii";
+import { useMotionReduced } from "../lib/useMotionReduced";
 
 /**
  * Animated ASCII backdrop for the Kolmogorov Complexity chapter.
@@ -34,6 +35,7 @@ export default function KolmogorovBackground({
   dark?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const reduced = useMotionReduced();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -41,7 +43,7 @@ export default function KolmogorovBackground({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = reduced;
     const cell = CELL;
     let cols = 0;
     let rows = 0;
@@ -162,7 +164,7 @@ export default function KolmogorovBackground({
       ro.disconnect();
       io.disconnect();
     };
-  }, [dark]);
+  }, [dark, reduced]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }
