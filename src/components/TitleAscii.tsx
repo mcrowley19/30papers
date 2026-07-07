@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import FieldBackground, { type FieldEnv } from "./FieldBackground";
 import { hash, clamp01 } from "../lib/ascii";
+import { useMediaQuery } from "../lib/useMediaQuery";
 
 /**
  * The landing wordmark: "30 papers" rendered as the same animated glyph
@@ -25,6 +27,9 @@ if (typeof document !== "undefined") {
 function buildMask(cols: number, rows: number) {
   // Skip degenerate sizes: mobile layout can report 0×0 before the hero settles.
   if (cols < 4 || rows < 4) return;
+
+  // Rasterizing before Geist loads yields an empty mask that gets cached.
+  if (document.fonts && !document.fonts.check('700 16px Geist')) return;
 
   const key = `${cols}x${rows}:${document.fonts?.status ?? ""}`;
   if (key === maskKey) return;
@@ -152,6 +157,35 @@ function drawTitle({ t, cols, rows, dot, ctx, cell }: FieldEnv) {
 }
 
 export default function TitleAscii({ className = "" }: { className?: string }) {
-  // A finer grid than the backdrops so the letterforms carry enough detail.
-  return <FieldBackground draw={drawTitle} cell={6} className={className} />;
+  const narrow = useMediaQuery("(max-width: 639px)");
+  const cell = narrow ? 5 : 6;
+  const [fontsReady, setFontsReady] = useState(
+    () => typeof document === "undefined" || !document.fonts || document.fonts.status === "loaded"
+  );
+
+  useEffect(() => {
+    if (!document.fonts) {
+      setFontsReady(true);
+      return;
+    }
+    let cancelled = false;
+    void Promise.all([
+      document.fonts.load('700 48px Geist'),
+      document.fonts.load('500 12px "Geist Mono"'),
+      document.fonts.ready,
+    ]).then(() => {
+      if (cancelled) return;
+      invalidateTitleMask();
+      setFontsReady(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!fontsReady) {
+    return <div className={className} aria-hidden="true" />;
+  }
+
+  return <FieldBackground draw={drawTitle} cell={cell} className={className} />;
 }

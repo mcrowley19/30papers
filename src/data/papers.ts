@@ -22,91 +22,12 @@ export interface Paper {
 }
 
 /**
- * The canonical Sutskever reading list, in the order supplied by the user.
- * The hero says "30 papers" by request; the list itself has 27 entries.
+ * The Sutskever reading list (27 entries), ordered for beginners: foundations
+ * and vision first, then sequences, attention, reasoning, scale, and finally the
+ * compression/complexity theory block that frames the original list.
  */
 export const papers: Paper[] = [
-  {
-    slug: "variational-lossy-autoencoder",
-    title: "Variational Lossy Autoencoder",
-    authors: "Chen, Kingma, Salimans, Duan, Dhariwal, Schulman, Sutskever, Abbeel",
-    year: 2016,
-    blurb:
-      "Combines variational autoencoders with autoregressive decoders, and shows how to control which information the latent code is forced to keep.",
-    kind: "arxiv",
-    arxivId: "1611.02731",
-    sourceUrl: "https://arxiv.org/abs/1611.02731",
-    risk: "open",
-  },
-  {
-    slug: "keeping-neural-networks-simple",
-    title: "Keeping Neural Networks Simple by Minimizing the Description Length of the Weights",
-    authors: "Hinton, van Camp",
-    year: 1993,
-    blurb:
-      "An early information-theoretic argument that good networks are ones whose weights can be described with few bits, linking generalization to compression.",
-    kind: "pdf",
-    sourceUrl: "https://www.cs.toronto.edu/~hinton/absps/colt93.pdf",
-    risk: "review",
-  },
-  {
-    slug: "coffee-automaton",
-    title: "Quantifying the Rise and Fall of Complexity in Closed Systems: The Coffee Automaton",
-    authors: "Aaronson, Carroll, Ouellette",
-    year: 2014,
-    blurb:
-      "Uses a simple cellular automaton model of coffee mixing with cream to ask why complexity rises and then falls as a system moves toward equilibrium.",
-    kind: "arxiv",
-    arxivId: "1405.6903",
-    sourceUrl: "https://arxiv.org/abs/1405.6903",
-    risk: "open",
-  },
-  {
-    slug: "first-law-of-complexodynamics",
-    title: "The First Law of Complexodynamics",
-    authors: "Scott Aaronson",
-    year: 2011,
-    blurb:
-      "A blog essay asking for a formal law that explains why the complexity of a closed system rises, peaks, and falls, rather than simply tracking entropy.",
-    kind: "blog",
-    sourceUrl: "https://scottaaronson.blog/?p=762",
-    // Permission to host granted by Scott Aaronson (July 2026).
-    risk: "open",
-  },
-  {
-    slug: "kolmogorov-complexity",
-    title: "Kolmogorov Complexity",
-    authors: "Cover, Thomas (Elements of Information Theory, Ch. 14)",
-    year: 2006,
-    blurb:
-      "The textbook treatment of the shortest program that produces a string, the formal backbone behind description length and algorithmic randomness.",
-    kind: "pdf",
-    sourceUrl: "https://onlinelibrary.wiley.com/doi/book/10.1002/047174882X",
-    risk: "review",
-  },
-  {
-    slug: "mdl-principle-tutorial",
-    title: "A Tutorial Introduction to the Minimum Description Length Principle",
-    authors: "Peter Grunwald",
-    year: 2004,
-    blurb:
-      "A readable introduction to choosing models by how well they compress the data, treating learning as finding the shortest description.",
-    kind: "arxiv",
-    arxivId: "math/0406077",
-    sourceUrl: "https://arxiv.org/abs/math/0406077",
-    risk: "open",
-  },
-  {
-    slug: "machine-super-intelligence",
-    title: "Machine Super Intelligence",
-    authors: "Shane Legg (PhD dissertation)",
-    year: 2008,
-    blurb:
-      "A doctoral thesis that proposes a formal, universal measure of machine intelligence and explores its consequences for very capable agents.",
-    kind: "pdf",
-    sourceUrl: "https://www.vetta.org/documents/Machine_Super_Intelligence.pdf",
-    risk: "open",
-  },
+  // Foundations
   {
     slug: "cs231n",
     title: "CS231n: Convolutional Neural Networks for Visual Recognition",
@@ -118,6 +39,29 @@ export const papers: Paper[] = [
     sourceUrl: "https://cs231n.github.io/",
     risk: "review",
   },
+  {
+    slug: "unreasonable-effectiveness-of-rnns",
+    title: "The Unreasonable Effectiveness of Recurrent Neural Networks",
+    authors: "Andrej Karpathy",
+    year: 2015,
+    blurb:
+      "A hands on blog post that trains character level RNNs to generate text and shows, with vivid examples, how much structure they capture.",
+    kind: "blog",
+    sourceUrl: "https://karpathy.github.io/2015/05/21/rnn-effectiveness/",
+    risk: "review",
+  },
+  {
+    slug: "understanding-lstms",
+    title: "Understanding LSTM Networks",
+    authors: "Christopher Olah",
+    year: 2015,
+    blurb:
+      "The clearest visual explanation of how LSTM gates carry information across long sequences, widely used as a first introduction.",
+    kind: "blog",
+    sourceUrl: "https://colah.github.io/posts/2015-08-Understanding-LSTMs/",
+    risk: "review",
+  },
+  // Vision
   {
     slug: "alexnet",
     title: "ImageNet Classification with Deep Convolutional Neural Networks",
@@ -166,6 +110,7 @@ export const papers: Paper[] = [
     sourceUrl: "https://arxiv.org/abs/1603.05027",
     risk: "open",
   },
+  // Sequences
   {
     slug: "rnn-regularization",
     title: "Recurrent Neural Network Regularization",
@@ -177,28 +122,6 @@ export const papers: Paper[] = [
     arxivId: "1409.2329",
     sourceUrl: "https://arxiv.org/abs/1409.2329",
     risk: "open",
-  },
-  {
-    slug: "unreasonable-effectiveness-of-rnns",
-    title: "The Unreasonable Effectiveness of Recurrent Neural Networks",
-    authors: "Andrej Karpathy",
-    year: 2015,
-    blurb:
-      "A hands on blog post that trains character level RNNs to generate text and shows, with vivid examples, how much structure they capture.",
-    kind: "blog",
-    sourceUrl: "https://karpathy.github.io/2015/05/21/rnn-effectiveness/",
-    risk: "review",
-  },
-  {
-    slug: "understanding-lstms",
-    title: "Understanding LSTM Networks",
-    authors: "Christopher Olah",
-    year: 2015,
-    blurb:
-      "The clearest visual explanation of how LSTM gates carry information across long sequences, widely used as a first introduction.",
-    kind: "blog",
-    sourceUrl: "https://colah.github.io/posts/2015-08-Understanding-LSTMs/",
-    risk: "review",
   },
   {
     slug: "deep-speech-2",
@@ -213,41 +136,6 @@ export const papers: Paper[] = [
     risk: "open",
   },
   {
-    slug: "annotated-transformer",
-    title: "The Annotated Transformer",
-    authors: "Sasha Rush and others (Harvard NLP)",
-    year: 2018,
-    blurb:
-      "A line by line, runnable reimplementation of the Transformer that turns the original paper into working, readable code.",
-    kind: "blog",
-    sourceUrl: "https://nlp.seas.harvard.edu/annotated-transformer/",
-    risk: "open",
-  },
-  {
-    slug: "relational-reasoning",
-    title: "A Simple Neural Network Module for Relational Reasoning",
-    authors: "Santoro, Raposo, Barrett, and others",
-    year: 2017,
-    blurb:
-      "Introduces the relation network, a small plug in module that lets a network reason about how pairs of objects relate to each other.",
-    kind: "arxiv",
-    arxivId: "1706.01427",
-    sourceUrl: "https://arxiv.org/abs/1706.01427",
-    risk: "open",
-  },
-  {
-    slug: "neural-turing-machines",
-    title: "Neural Turing Machines",
-    authors: "Graves, Wayne, Danihelka",
-    year: 2014,
-    blurb:
-      "Couples a neural network to an external memory it can read and write with differentiable attention, learning simple algorithms from examples.",
-    kind: "arxiv",
-    arxivId: "1410.5401",
-    sourceUrl: "https://arxiv.org/abs/1410.5401",
-    risk: "open",
-  },
-  {
     slug: "order-matters",
     title: "Order Matters: Sequence to Sequence for Sets",
     authors: "Vinyals, Bengio, Kudlur",
@@ -259,30 +147,7 @@ export const papers: Paper[] = [
     sourceUrl: "https://arxiv.org/abs/1511.06391",
     risk: "open",
   },
-  {
-    slug: "relational-recurrent-networks",
-    title: "Relational Recurrent Neural Networks",
-    authors: "Santoro, Faulkner, Raposo, and others",
-    year: 2018,
-    blurb:
-      "Adds a self attention based memory to recurrent networks so that stored memories can interact, improving tasks that need relational reasoning over time.",
-    kind: "arxiv",
-    arxivId: "1806.01822",
-    sourceUrl: "https://arxiv.org/abs/1806.01822",
-    risk: "open",
-  },
-  {
-    slug: "attention-is-all-you-need",
-    title: "Attention Is All You Need",
-    authors: "Vaswani, Shazeer, Parmar, and others",
-    year: 2017,
-    blurb:
-      "The Transformer. Replaces recurrence entirely with self attention, the architecture that underpins almost every modern large language model.",
-    kind: "arxiv",
-    arxivId: "1706.03762",
-    sourceUrl: "https://arxiv.org/abs/1706.03762",
-    risk: "open",
-  },
+  // Attention
   {
     slug: "neural-machine-translation",
     title: "Neural Machine Translation by Jointly Learning to Align and Translate",
@@ -308,6 +173,66 @@ export const papers: Paper[] = [
     risk: "open",
   },
   {
+    slug: "attention-is-all-you-need",
+    title: "Attention Is All You Need",
+    authors: "Vaswani, Shazeer, Parmar, and others",
+    year: 2017,
+    blurb:
+      "The Transformer. Replaces recurrence entirely with self attention, the architecture that underpins almost every modern large language model.",
+    kind: "arxiv",
+    arxivId: "1706.03762",
+    sourceUrl: "https://arxiv.org/abs/1706.03762",
+    risk: "open",
+  },
+  {
+    slug: "annotated-transformer",
+    title: "The Annotated Transformer",
+    authors: "Sasha Rush and others (Harvard NLP)",
+    year: 2018,
+    blurb:
+      "A line by line, runnable reimplementation of the Transformer that turns the original paper into working, readable code.",
+    kind: "blog",
+    sourceUrl: "https://nlp.seas.harvard.edu/annotated-transformer/",
+    risk: "open",
+  },
+  // Memory and reasoning
+  {
+    slug: "neural-turing-machines",
+    title: "Neural Turing Machines",
+    authors: "Graves, Wayne, Danihelka",
+    year: 2014,
+    blurb:
+      "Couples a neural network to an external memory it can read and write with differentiable attention, learning simple algorithms from examples.",
+    kind: "arxiv",
+    arxivId: "1410.5401",
+    sourceUrl: "https://arxiv.org/abs/1410.5401",
+    risk: "open",
+  },
+  {
+    slug: "relational-reasoning",
+    title: "A Simple Neural Network Module for Relational Reasoning",
+    authors: "Santoro, Raposo, Barrett, and others",
+    year: 2017,
+    blurb:
+      "Introduces the relation network, a small plug in module that lets a network reason about how pairs of objects relate to each other.",
+    kind: "arxiv",
+    arxivId: "1706.01427",
+    sourceUrl: "https://arxiv.org/abs/1706.01427",
+    risk: "open",
+  },
+  {
+    slug: "relational-recurrent-networks",
+    title: "Relational Recurrent Neural Networks",
+    authors: "Santoro, Faulkner, Raposo, and others",
+    year: 2018,
+    blurb:
+      "Adds a self attention based memory to recurrent networks so that stored memories can interact, improving tasks that need relational reasoning over time.",
+    kind: "arxiv",
+    arxivId: "1806.01822",
+    sourceUrl: "https://arxiv.org/abs/1806.01822",
+    risk: "open",
+  },
+  {
     slug: "neural-message-passing",
     title: "Neural Message Passing for Quantum Chemistry",
     authors: "Gilmer, Schoenholz, Riley, Vinyals, Dahl",
@@ -319,6 +244,7 @@ export const papers: Paper[] = [
     sourceUrl: "https://arxiv.org/abs/1704.01212",
     risk: "open",
   },
+  // Scale
   {
     slug: "scaling-laws",
     title: "Scaling Laws for Neural Language Models",
@@ -341,6 +267,88 @@ export const papers: Paper[] = [
     kind: "arxiv",
     arxivId: "1811.06965",
     sourceUrl: "https://arxiv.org/abs/1811.06965",
+    risk: "open",
+  },
+  // Compression and complexity (theory capstone)
+  {
+    slug: "keeping-neural-networks-simple",
+    title: "Keeping Neural Networks Simple by Minimizing the Description Length of the Weights",
+    authors: "Hinton, van Camp",
+    year: 1993,
+    blurb:
+      "An early information-theoretic argument that good networks are ones whose weights can be described with few bits, linking generalization to compression.",
+    kind: "pdf",
+    sourceUrl: "https://www.cs.toronto.edu/~hinton/absps/colt93.pdf",
+    risk: "review",
+  },
+  {
+    slug: "mdl-principle-tutorial",
+    title: "A Tutorial Introduction to the Minimum Description Length Principle",
+    authors: "Peter Grunwald",
+    year: 2004,
+    blurb:
+      "A readable introduction to choosing models by how well they compress the data, treating learning as finding the shortest description.",
+    kind: "arxiv",
+    arxivId: "math/0406077",
+    sourceUrl: "https://arxiv.org/abs/math/0406077",
+    risk: "open",
+  },
+  {
+    slug: "first-law-of-complexodynamics",
+    title: "The First Law of Complexodynamics",
+    authors: "Scott Aaronson",
+    year: 2011,
+    blurb:
+      "A blog essay asking for a formal law that explains why the complexity of a closed system rises, peaks, and falls, rather than simply tracking entropy.",
+    kind: "blog",
+    sourceUrl: "https://scottaaronson.blog/?p=762",
+    // Permission to host granted by Scott Aaronson (July 2026).
+    risk: "open",
+  },
+  {
+    slug: "coffee-automaton",
+    title: "Quantifying the Rise and Fall of Complexity in Closed Systems: The Coffee Automaton",
+    authors: "Aaronson, Carroll, Ouellette",
+    year: 2014,
+    blurb:
+      "Uses a simple cellular automaton model of coffee mixing with cream to ask why complexity rises and then falls as a system moves toward equilibrium.",
+    kind: "arxiv",
+    arxivId: "1405.6903",
+    sourceUrl: "https://arxiv.org/abs/1405.6903",
+    risk: "open",
+  },
+  {
+    slug: "kolmogorov-complexity",
+    title: "Kolmogorov Complexity",
+    authors: "Cover, Thomas (Elements of Information Theory, Ch. 14)",
+    year: 2006,
+    blurb:
+      "The textbook treatment of the shortest program that produces a string, the formal backbone behind description length and algorithmic randomness.",
+    kind: "pdf",
+    sourceUrl: "https://onlinelibrary.wiley.com/doi/book/10.1002/047174882X",
+    risk: "review",
+  },
+  {
+    slug: "variational-lossy-autoencoder",
+    title: "Variational Lossy Autoencoder",
+    authors: "Chen, Kingma, Salimans, Duan, Dhariwal, Schulman, Sutskever, Abbeel",
+    year: 2016,
+    blurb:
+      "Combines variational autoencoders with autoregressive decoders, and shows how to control which information the latent code is forced to keep.",
+    kind: "arxiv",
+    arxivId: "1611.02731",
+    sourceUrl: "https://arxiv.org/abs/1611.02731",
+    risk: "open",
+  },
+  {
+    slug: "machine-super-intelligence",
+    title: "Machine Super Intelligence",
+    authors: "Shane Legg (PhD dissertation)",
+    year: 2008,
+    blurb:
+      "A doctoral thesis that proposes a formal, universal measure of machine intelligence and explores its consequences for very capable agents.",
+    kind: "pdf",
+    sourceUrl: "https://www.vetta.org/documents/Machine_Super_Intelligence.pdf",
     risk: "open",
   },
 ];

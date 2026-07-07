@@ -20,8 +20,9 @@ export default function Colophon() {
         <Reveal delay={90}>
           <p className="mt-5 max-w-2xl text-pretty font-serif text-2xl leading-snug text-ink sm:text-3xl">
             The works that carry modern deep learning, gathered as a printed
-            monograph. Compression and complexity, vision, recurrence, attention,
-            and scale, read in one quiet sitting.
+            monograph. Start with foundations and vision, move through sequences
+            and attention, then scale and the compression theory that ties it
+            all together.
           </p>
         </Reveal>
 

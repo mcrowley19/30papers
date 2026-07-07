@@ -107,13 +107,21 @@ export default function FieldBackground({
     // both are ready so the title mask is not built from an empty canvas.
     redraw();
     requestAnimationFrame(redraw);
-    void document.fonts?.ready.then(redraw);
+    void document.fonts?.ready.then(() => {
+      redraw();
+      if (!reduce) {
+        last = 0;
+        raf = requestAnimationFrame(loop);
+      }
+    });
     if (!reduce) raf = requestAnimationFrame(loop);
 
     const ro = new ResizeObserver(() => {
       redraw();
     });
     ro.observe(canvas);
+    const parent = canvas.parentElement;
+    if (parent) ro.observe(parent);
 
     const io = new IntersectionObserver(
       ([e]) => {

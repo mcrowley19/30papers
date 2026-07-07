@@ -1,18 +1,19 @@
 import TitleAscii from "./TitleAscii";
 
 /**
- * Landing wordmark: a reliable CSS treatment on phones (canvas halftone can fail
- * to rasterize before fonts settle), full animated halftone from sm breakpoint up.
+ * Landing wordmark. Mobile uses a WebP capture of the live halftone renderer —
+ * pixel-identical to the desktop canvas. sm+ runs the animated canvas.
  */
 export default function HeroWordmark() {
   return (
     <>
-      <span
+      <img
+        src="/wordmark-mobile.png"
+        alt=""
         aria-hidden="true"
-        className="title-extrude mx-auto block max-w-full px-3 text-center font-tech text-[clamp(2.75rem,13.5vw,4.25rem)] font-bold leading-[0.95] tracking-[-0.02em] sm:hidden"
-      >
-        30 papers
-      </span>
+        decoding="async"
+        className="pointer-events-none absolute inset-0 h-full w-full object-contain object-center sm:hidden"
+      />
       <TitleAscii className="absolute inset-0 hidden h-full w-full sm:block" />
     </>
   );
