@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import Seo from "../components/Seo";
+import ReadingProgress from "../components/ReadingProgress";
 import SelectionAskPopup from "../components/SelectionAskPopup";
 import { Link, useParams } from "react-router-dom";
 import { paperBySlug } from "../data/papers";
@@ -129,20 +130,21 @@ export default function Paper() {
   const Background = BACKGROUNDS[paper.slug];
 
   return (
-    <main className={`min-h-screen bg-paper/50 transition-[margin] duration-300 ${activeTerm ? "lg:mr-[26rem]" : ""}`}>
+    <main className={`paper-reader min-h-screen bg-paper/50 pb-[env(safe-area-inset-bottom)] transition-[margin] duration-300 ${activeTerm ? "lg:mr-[26rem]" : ""}`}>
       {seo && <Seo {...seo} />}
+      <ReadingProgress targetRef={articleRef} />
       {/* Monograph/Landing page inspired hero header */}
-      <div className="relative w-full overflow-hidden border-b border-rule bg-white py-16">
+      <div className="relative w-full overflow-hidden border-b border-rule bg-white py-8 sm:py-16">
         {Background && (
           <Background className="pointer-events-none absolute inset-0 h-full w-full opacity-60" />
         )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/80 to-white/30" />
 
-        <header className="relative z-10 mx-auto flex w-full max-w-[88rem] flex-col-reverse justify-between gap-8 px-6 sm:flex-row sm:items-center sm:px-12 lg:px-20">
-          <div className="flex-1">
+        <header className="relative z-10 mx-auto flex w-full max-w-[88rem] flex-col-reverse justify-between gap-6 px-4 sm:flex-row sm:items-center sm:gap-8 sm:px-12 lg:px-20">
+          <div className="flex-1 min-w-0">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 font-sans text-sm text-muted transition-colors hover:text-ink"
+              className="inline-flex min-h-11 items-center gap-2 font-sans text-sm text-muted transition-colors hover:text-ink"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                 <path
@@ -155,10 +157,10 @@ export default function Paper() {
               </svg>
               30 papers
             </Link>
-            <h1 className="mt-4 font-serif text-3xl leading-tight text-ink sm:text-4xl md:text-5xl max-w-3xl">
+            <h1 className="mt-3 max-w-3xl text-pretty font-serif text-2xl leading-snug text-ink sm:mt-4 sm:text-4xl sm:leading-tight md:text-5xl">
               {paper.title}
             </h1>
-            <p className="mt-4 font-sans text-base text-ink-soft">
+            <p className="mt-3 font-sans text-sm leading-relaxed text-ink-soft sm:mt-4 sm:text-base">
               {paper.authors} · {paper.year}
             </p>
             <div className="mt-6 flex flex-wrap gap-4">
@@ -166,7 +168,7 @@ export default function Paper() {
                 href={paper.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 font-sans text-sm text-accent hover:text-accent-deep"
+                className="inline-flex min-h-11 items-center gap-1.5 font-sans text-sm text-accent hover:text-accent-deep"
               >
                 View the original source
                 <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
@@ -183,7 +185,7 @@ export default function Paper() {
           </div>
 
           {/* Miniature version of the paper's thumbnail */}
-          <div className="relative aspect-[3/4] w-28 sm:w-36 shrink-0 overflow-hidden bg-neutral-100 shadow-xl border border-rule/50 self-end">
+          <div className="relative aspect-[3/4] w-24 shrink-0 overflow-hidden border border-rule/50 bg-neutral-100 shadow-xl self-end sm:w-36">
             <img
               src={`/thumbnails/${paper.slug}.webp`}
               alt={paper.title}
@@ -195,9 +197,9 @@ export default function Paper() {
         </header>
       </div>
 
-      <div className="mx-auto w-full max-w-5xl px-3 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <div className="mx-auto w-full max-w-5xl px-0 py-0 sm:px-6 sm:py-12 lg:px-8">
         {loading ? (
-          <div className="rounded-sm border border-rule/60 bg-white px-5 py-8 shadow-xl sm:px-8 sm:py-12 md:px-16 md:py-20">
+          <div className="reader-sheet sm:rounded-sm sm:border sm:border-rule/60 sm:bg-white sm:px-8 sm:py-12 sm:shadow-xl md:px-16 md:py-20">
             <ReaderSkeleton />
           </div>
         ) : paper.risk === "review" ? (
@@ -205,13 +207,13 @@ export default function Paper() {
         ) : body ? (
           <article
             ref={articleRef}
-            className="prose-paper relative rounded-sm border border-rule/60 bg-white px-5 py-8 shadow-xl sm:px-8 sm:py-12 md:px-16 md:py-20"
+            className="prose-paper reader-sheet relative sm:rounded-sm sm:border sm:border-rule/60 sm:bg-white sm:px-8 sm:py-12 sm:shadow-xl md:px-16 md:py-20"
           >
             {body}
             <SelectionAskPopup paper={paper} containerRef={articleRef} />
           </article>
         ) : (
-          <div className="rounded-sm border border-rule/60 bg-white px-5 py-8 shadow-xl sm:px-8 sm:py-12 md:px-16 md:py-20">
+          <div className="reader-sheet sm:rounded-sm sm:border sm:border-rule/60 sm:bg-white sm:px-8 sm:py-12 sm:shadow-xl md:px-16 md:py-20">
             <ComingSoon sourceUrl={paper.sourceUrl} />
           </div>
         )}

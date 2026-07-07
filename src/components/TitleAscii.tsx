@@ -12,7 +12,20 @@ const TEXT = "30 papers";
 let maskKey = "";
 let mask: Float32Array = new Float32Array(0);
 
+/** Drop cached raster so the next frame rebuilds (e.g. after web fonts load). */
+export function invalidateTitleMask() {
+  maskKey = "";
+}
+
+if (typeof document !== "undefined") {
+  void document.fonts?.load('700 48px Geist').then(invalidateTitleMask);
+  void document.fonts?.ready.then(invalidateTitleMask);
+}
+
 function buildMask(cols: number, rows: number) {
+  // Skip degenerate sizes: mobile layout can report 0×0 before the hero settles.
+  if (cols < 4 || rows < 4) return;
+
   const key = `${cols}x${rows}:${document.fonts?.status ?? ""}`;
   if (key === maskKey) return;
   maskKey = key;
@@ -31,7 +44,8 @@ function buildMask(cols: number, rows: number) {
   octx.textBaseline = "middle";
   octx.fillStyle = "#fff";
   // A little tracking keeps neighbouring letters from fusing on the grid.
-  octx.letterSpacing = `${S * 4}px`;
+  // Tighten on narrow canvases so the full wordmark still fits.
+  octx.letterSpacing = `${Math.min(S * 4, (cols * S) / TEXT.length)}px`;
   // Largest size that fits the grid with a small margin.
   let size = Math.floor(rows * S * 0.8);
   do {

@@ -98,13 +98,20 @@ export default function FieldBackground({
       raf = requestAnimationFrame(loop);
     }
 
-    resize();
-    if (reduce) frame(0);
-    else raf = requestAnimationFrame(loop);
-
-    const ro = new ResizeObserver(() => {
+    const redraw = () => {
       resize();
       if (reduce) frame(0);
+    };
+
+    // Layout and web fonts can settle after first paint on mobile; redraw once
+    // both are ready so the title mask is not built from an empty canvas.
+    redraw();
+    requestAnimationFrame(redraw);
+    void document.fonts?.ready.then(redraw);
+    if (!reduce) raf = requestAnimationFrame(loop);
+
+    const ro = new ResizeObserver(() => {
+      redraw();
     });
     ro.observe(canvas);
 
@@ -131,5 +138,5 @@ export default function FieldBackground({
     };
   }, [draw, cellProp, dark]);
 
-  return <canvas ref={ref} className={className} aria-hidden="true" />;
+  return <canvas ref={ref} className={`block ${className}`} aria-hidden="true" />;
 }

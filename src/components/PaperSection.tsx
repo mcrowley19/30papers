@@ -177,8 +177,8 @@ export default function PaperSection({
         </div>
       </Link>
 
-      <div className="margin-plate pointer-events-none absolute bottom-6 left-1/2 z-10 w-[min(24rem,calc(100%-2rem))] -translate-x-1/2 lg:hidden">
-        <h2 className="font-serif text-xl leading-tight text-cover">{paper.title}</h2>
+      <div className="margin-plate pointer-events-none absolute bottom-6 left-1/2 z-10 w-[min(24rem,calc(100%-2rem))] -translate-x-1/2 text-pretty lg:hidden">
+        <h2 className="font-serif text-xl leading-snug text-cover">{paper.title}</h2>
         <p className="mt-3 font-serif text-sm leading-relaxed text-ink-soft">{paper.blurb}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {credit.shown.slice(0, 2).map((person) => (

@@ -96,7 +96,7 @@ export default function Home() {
     <main className="landing-paper min-h-screen overflow-x-clip">
       <Seo {...seo} />
       <header className="relative w-full snap-start px-4 sm:px-0">
-        <h1 className="relative block h-[42vh] min-h-[16rem] w-full sm:h-[58vh]">
+        <h1 className="relative block h-[48vh] min-h-[18rem] w-full sm:h-[58vh]">
           <span className="sr-only">30 papers</span>
           <TitleAscii className="absolute inset-0 h-full w-full" />
         </h1>

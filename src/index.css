@@ -28,6 +28,7 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     background: #fff;
+    scroll-padding-top: 5rem;
   }
 
   body {
@@ -75,45 +76,88 @@
     }
   }
 
+  /* Mobile reader shell: edge-to-edge column, minimal chrome. */
+  .reader-sheet {
+    padding:
+      max(1.25rem, env(safe-area-inset-top))
+      max(1rem, env(safe-area-inset-right))
+      max(1.5rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+    background: #fff;
+  }
+
+  @media (min-width: 640px) {
+    .reader-sheet {
+      padding: unset;
+      background: transparent;
+    }
+  }
+
   /* ------------------------------------------------------------------ *
-   * Paper reader. The goal is fidelity to the source: arXiv papers come
-   * in as LaTeXML HTML (ltx_* classes) and are set exactly like the
-   * LaTeX original — Computer Modern, justified, indented paragraphs,
-   * LaTeX-style captions, tables and bibliography. Generic rules below
-   * cover the few papers ingested from PDFs or blog posts instead.
+   * Paper reader — mobile-first, research-backed typography.
+   *
+   * Mobile defaults follow empirically validated web-reading guidance:
+   *   • 45–75 characters per line (Bringhurst; IxDF; Rello et al. W4A ’12)
+   *   • Left rag, not justified — avoids word-spacing rivers (Stiff 1996;
+   *     IxDF; eye-tracking on return saccades)
+   *   • 1.5–1.6 unitless leading for body copy (IxDF; Reading Univ. 2004)
+   *   • Block paragraphs with clear vertical rhythm, not print indents
+   *   • 16px floor via clamp() in rem (WCAG 1.4.4; mobile acuity research)
+   *
+   * From 640px up, restore LaTeX-faithful justified, indented paragraphs.
    * ------------------------------------------------------------------ */
   .prose-paper {
     font-family: "CMU Serif", "Newsreader", Georgia, serif;
     @apply text-ink;
-    font-size: 1.16rem;
-    line-height: 1.45;
-    text-align: justify;
-    text-justify: inter-word;
-    hyphens: auto;
-    /* A LaTeX text block: one measured column, centered on the sheet. */
-    max-width: 52rem;
-    margin-inline: auto;
-    /* Long URLs and unbreakable tokens wrap instead of widening the page. */
+    -webkit-text-size-adjust: 100%;
     overflow-wrap: break-word;
+
+    /* Fluid body size: 16px floor, gentle growth on wider phones. */
+    font-size: clamp(1rem, 0.97rem + 0.14vw, 1.0625rem);
+    line-height: 1.6;
+    text-align: left;
+    text-wrap: pretty;
+    hyphens: none;
+
+    /* ~66ch is the classical optimum (Bringhurst); fits 44–66 CPL on phones. */
+    max-width: 65ch;
+    margin-inline: auto;
+
+    --reader-para-gap: 1.25em;
+    --reader-section-gap: 1.75em;
+  }
+
+  .prose-paper h1,
+  .prose-paper h2,
+  .prose-paper h3,
+  .prose-paper h4,
+  .prose-paper .ltx_title_section,
+  .prose-paper .ltx_title_appendix,
+  .prose-paper .ltx_title_bibliography,
+  .prose-paper .ltx_title_subsection,
+  .prose-paper .ltx_title_subsubsection,
+  .prose-paper .ltx_title_paragraph {
+    text-wrap: balance;
+    scroll-margin-top: 5rem;
   }
 
   /* --- Generic fallback (PDF-extracted and blog-sourced papers) --- */
   .prose-paper p {
-    margin: 0 0 0.75em;
+    margin: 0 0 var(--reader-para-gap);
   }
   .prose-paper h1,
   .prose-paper h2,
   .prose-paper h3,
   .prose-paper h4 {
     font-weight: 700;
-    line-height: 1.25;
-    margin: 1.6em 0 0.6em;
+    line-height: 1.3;
+    margin: var(--reader-section-gap) 0 0.5em;
     text-align: left;
   }
-  .prose-paper h1 { font-size: 1.65rem; }
-  .prose-paper h2 { font-size: 1.42rem; }
-  .prose-paper h3 { font-size: 1.25rem; }
-  .prose-paper h4 { font-size: 1.16rem; }
+  .prose-paper h1 { font-size: 1.35rem; }
+  .prose-paper h2 { font-size: 1.2rem; }
+  .prose-paper h3 { font-size: 1.1rem; }
+  .prose-paper h4 { font-size: 1rem; }
   .prose-paper a {
     @apply text-accent underline decoration-rule underline-offset-2 hover:decoration-accent;
   }
@@ -127,15 +171,17 @@
   }
   .prose-paper figcaption {
     margin-top: 0.6em;
-    font-size: 0.88em;
-    line-height: 1.35;
-    text-align: center;
+    font-size: 0.9em;
+    line-height: 1.45;
+    text-align: left;
   }
-  .prose-paper ul { margin: 0.8em 0; padding-left: 2em; list-style: disc; }
-  .prose-paper ol { margin: 0.8em 0; padding-left: 2em; list-style: decimal; }
-  .prose-paper li { margin: 0.25em 0; }
+  .prose-paper ul { margin: 0.8em 0; padding-left: 1.25em; list-style: disc; }
+  .prose-paper ol { margin: 0.8em 0; padding-left: 1.25em; list-style: decimal; }
+  .prose-paper li { margin: 0.35em 0; }
   .prose-paper blockquote {
-    margin: 1em 2em;
+    margin: 1em 0;
+    padding-left: 1em;
+    border-left: 2px solid theme("colors.rule");
     font-style: italic;
   }
   .prose-paper code {
@@ -171,11 +217,12 @@
   }
 
   /* --- LaTeXML documents: paragraphs --- */
-  /* LaTeX paragraphs are indented, not spaced apart. */
+  /* Mobile: block style — spaced paragraphs, no indent (Rello W4A; IxDF). */
   .prose-paper .ltx_para { margin: 0; }
   .prose-paper .ltx_p {
-    margin: 0;
-    text-indent: 1.5em;
+    margin: 0 0 var(--reader-para-gap);
+    text-indent: 0;
+    text-align: left;
   }
   .prose-paper .ltx_para.ltx_noindent > .ltx_p:first-child,
   .prose-paper .ltx_abstract .ltx_p,
@@ -185,31 +232,38 @@
   .prose-paper .ltx_note_content .ltx_p {
     text-indent: 0;
   }
-  /* Small gap between LaTeX paragraph blocks so the wall of text breathes
-     the same way \parskip-less LaTeX does after rasterization. */
-  .prose-paper .ltx_para + .ltx_para { margin-top: 0.35em; }
+  .prose-paper .ltx_para + .ltx_para { margin-top: 0; }
 
   /* --- LaTeXML: front matter and sectioning --- */
   .prose-paper .ltx_abstract {
-    margin: 1.8em 2.5em;
-    font-size: 0.94em;
+    margin: 1.25em 0;
+    font-size: 0.97em;
   }
   .prose-paper .ltx_title_abstract {
-    text-align: center;
+    text-align: left;
     font-size: 1.05em;
     margin: 0 0 0.7em;
   }
   .prose-paper .ltx_title_section,
   .prose-paper .ltx_title_appendix,
   .prose-paper .ltx_title_bibliography {
-    font-size: 1.5rem;
-    margin: 1.8em 0 0.8em;
+    font-size: 1.2rem;
+    line-height: 1.3;
+    margin: var(--reader-section-gap) 0 0.5em;
   }
-  .prose-paper .ltx_title_subsection { font-size: 1.28rem; margin: 1.5em 0 0.6em; }
-  .prose-paper .ltx_title_subsubsection { font-size: 1.18rem; margin: 1.3em 0 0.5em; }
-  /* \paragraph{} headings run bold at text size. */
+  .prose-paper .ltx_title_subsection {
+    font-size: 1.1rem;
+    line-height: 1.35;
+    margin: 1.35em 0 0.45em;
+  }
+  .prose-paper .ltx_title_subsubsection {
+    font-size: 1.05rem;
+    line-height: 1.35;
+    margin: 1.2em 0 0.4em;
+  }
   .prose-paper .ltx_title_paragraph {
-    font-size: 1.16rem;
+    font-size: 1rem;
+    line-height: 1.4;
     margin: 1em 0 0.2em;
   }
   .prose-paper .ltx_tag_section,
@@ -286,9 +340,9 @@
   .prose-paper .ltx_graphics { max-width: 100%; height: auto; }
   .prose-paper .ltx_caption {
     margin-top: 0.6em;
-    font-size: 0.88em;
-    line-height: 1.35;
-    text-align: center;
+    font-size: 0.9em;
+    line-height: 1.45;
+    text-align: left;
   }
   .prose-paper .ltx_tag_figure,
   .prose-paper .ltx_tag_table { margin-right: 0.25em; }
@@ -382,9 +436,9 @@
     padding: 0;
   }
   .prose-paper .ltx_bibitem {
-    margin: 0 0 0.45em;
-    padding-left: 2.2em;
-    text-indent: -2.2em;
+    margin: 0 0 0.75em;
+    padding-left: 1.5em;
+    text-indent: -1.5em;
     text-align: left;
   }
   .prose-paper .ltx_bibitem .ltx_tag_bibitem { margin-right: 0.4em; }
@@ -397,6 +451,136 @@
     display: none;
   }
   .prose-paper .ltx_transformed_outer { max-width: 100%; overflow: hidden; }
+
+  /* --- Desktop: LaTeX-faithful measure and paragraph style --- */
+  @media (min-width: 640px) {
+    .prose-paper {
+      font-size: 1.16rem;
+      line-height: 1.45;
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: auto;
+      max-width: 52rem;
+      --reader-para-gap: 0.75em;
+      --reader-section-gap: 1.6em;
+    }
+    .prose-paper p {
+      margin: 0 0 0.75em;
+    }
+    .prose-paper h1,
+    .prose-paper h2,
+    .prose-paper h3,
+    .prose-paper h4 {
+      line-height: 1.25;
+      margin: 1.6em 0 0.6em;
+    }
+    .prose-paper h1 { font-size: 1.65rem; }
+    .prose-paper h2 { font-size: 1.42rem; }
+    .prose-paper h3 { font-size: 1.25rem; }
+    .prose-paper h4 { font-size: 1.16rem; }
+    .prose-paper ul,
+    .prose-paper ol {
+      padding-left: 2em;
+    }
+    .prose-paper li { margin: 0.25em 0; }
+    .prose-paper blockquote {
+      margin: 1em 2em;
+      padding-left: 0;
+      border-left: none;
+    }
+    .prose-paper figcaption {
+      font-size: 0.88em;
+      line-height: 1.35;
+      text-align: center;
+    }
+    .prose-paper .ltx_p {
+      margin: 0;
+      text-indent: 1.5em;
+    }
+    .prose-paper .ltx_para + .ltx_para { margin-top: 0.35em; }
+    .prose-paper .ltx_abstract {
+      margin: 1.8em 2.5em;
+      font-size: 0.94em;
+    }
+    .prose-paper .ltx_title_abstract {
+      text-align: center;
+    }
+    .prose-paper .ltx_title_section,
+    .prose-paper .ltx_title_appendix,
+    .prose-paper .ltx_title_bibliography {
+      font-size: 1.5rem;
+      margin: 1.8em 0 0.8em;
+    }
+    .prose-paper .ltx_title_subsection {
+      font-size: 1.28rem;
+      margin: 1.5em 0 0.6em;
+    }
+    .prose-paper .ltx_title_subsubsection {
+      font-size: 1.18rem;
+      margin: 1.3em 0 0.5em;
+    }
+    .prose-paper .ltx_title_paragraph {
+      font-size: 1.16rem;
+    }
+    .prose-paper .ltx_caption {
+      font-size: 0.88em;
+      line-height: 1.35;
+      text-align: center;
+    }
+    .prose-paper .ltx_bibitem {
+      margin: 0 0 0.45em;
+      padding-left: 2.2em;
+      text-indent: -2.2em;
+    }
+  }
+
+  /* --- Mobile touch & scroll affordances --- */
+  @media (max-width: 639px) {
+    .prose-paper a {
+      text-underline-offset: 0.18em;
+    }
+    .prose-paper .katex-display,
+    .prose-paper math[display="block"],
+    .prose-paper .ltx_table,
+    .prose-paper .ltx_listing,
+    .prose-paper pre {
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+    .prose-paper .katex-display,
+    .prose-paper math[display="block"] {
+      padding-bottom: 0.35em;
+      mask-image: linear-gradient(to right, #000 92%, transparent);
+      -webkit-mask-image: linear-gradient(to right, #000 92%, transparent);
+    }
+    .prose-paper .ltx_note_mark {
+      display: inline-flex;
+      min-width: 2.75rem;
+      min-height: 2.75rem;
+      align-items: center;
+      justify-content: center;
+      margin: -0.65rem -0.35rem;
+      padding: 0.35rem;
+      font-size: 0.8em;
+    }
+    .prose-paper .ltx_note:hover .ltx_note_outer,
+    .prose-paper .ltx_note:focus-within .ltx_note_outer {
+      position: fixed;
+      left: max(1rem, env(safe-area-inset-left));
+      right: max(1rem, env(safe-area-inset-right));
+      top: auto;
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      width: auto;
+      max-height: min(40vh, 20rem);
+      overflow-y: auto;
+    }
+    .prose-paper .ltx_note_content {
+      font-size: 1rem;
+      line-height: 1.55;
+      padding: 0.85em 1em;
+      box-shadow: 0 8px 32px rgb(0 0 0 / 0.18);
+    }
+  }
 }
 
 /* Streaming-token caret: a solid block that rides the end of generated text. */
