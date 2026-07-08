@@ -30,3 +30,13 @@ export function hash(x: number, y: number) {
 export function glyphFor(intensity: number, ramp = DOTS) {
   return ramp[Math.min(ramp.length - 1, Math.floor(clamp01(intensity) * ramp.length))];
 }
+
+/** Slow global pulse — no spatial sweep across the canvas. */
+export function breathe(t: number, speed = 0.35, phase = 0) {
+  return 0.5 + 0.5 * Math.sin(t * speed + phase);
+}
+
+/** Per-cell flicker — each glyph pulses in place rather than in a travelling wave. */
+export function shimmer(t: number, cx: number, cy: number, speed = 0.45) {
+  return 0.5 + 0.5 * Math.sin(t * speed + hash(cx, cy) * 6.2831);
+}

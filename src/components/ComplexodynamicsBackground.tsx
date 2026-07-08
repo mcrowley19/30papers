@@ -141,11 +141,11 @@ export default function ComplexodynamicsBackground({
 
     let raf = 0;
     let last = 0;
-    let running = true;
+    let running = false;
 
     function loop(tms: number) {
       if (!running) return;
-      if (tms - last >= 33) {
+      if (tms - last >= 50) {
         frame(tms);
         last = tms;
       }
@@ -154,7 +154,6 @@ export default function ComplexodynamicsBackground({
 
     resize();
     if (reduce) frame(3000);
-    else raf = requestAnimationFrame(loop);
 
     const ro = new ResizeObserver(() => {
       resize();
@@ -173,7 +172,7 @@ export default function ComplexodynamicsBackground({
           cancelAnimationFrame(raf);
         }
       },
-      { threshold: 0 }
+      { threshold: 0.2, rootMargin: "-20% 0px -20% 0px" }
     );
     io.observe(canvas);
 

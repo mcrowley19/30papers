@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { CELL } from "../lib/ascii";
+import { CELL, hash } from "../lib/ascii";
 import { useMotionReduced } from "../lib/useMotionReduced";
 
 /**
@@ -194,8 +194,8 @@ export default function CoffeeAutomatonBackground({
           let raw = 0;
           for (let e = 0; e < emitters.length; e++) {
             const ph = phases[e];
-            const sway = Math.sin(hh * 0.2 - t * 1.5 + ph) * Math.min(hh * 0.18, 4);
-            const swirl = Math.sin(hh * 0.5 - t * 1.1 + ph * 1.7) * Math.min(hh * 0.12, 2.8);
+            const sway = Math.sin(t * 0.55 + ph + cxi * 0.07) * Math.min(hh * 0.1, 2.5);
+            const swirl = Math.sin(t * 0.4 + ph * 1.7 + hash(cxi, cyi) * 6.28) * Math.min(hh * 0.08, 1.8);
             const center = emCx + emitters[e] + sway + swirl;
             const dx = (cxi + 0.5 - center) / widthCells;
             raw += Math.exp(-dx * dx);
@@ -215,11 +215,11 @@ export default function CoffeeAutomatonBackground({
 
     let raf = 0;
     let last = 0;
-    let running = true;
+    let running = false;
 
     function loop(tms: number) {
       if (!running) return;
-      if (tms - last >= 33) {
+      if (tms - last >= 50) {
         renderSteam(tms / 1000);
         last = tms;
       }
@@ -230,7 +230,6 @@ export default function CoffeeAutomatonBackground({
       resize();
       renderMug();
       if (reduce) renderSteam(3);
-      else raf = requestAnimationFrame(loop);
     }
     start();
 
@@ -253,7 +252,7 @@ export default function CoffeeAutomatonBackground({
           cancelAnimationFrame(raf);
         }
       },
-      { threshold: 0 }
+      { threshold: 0.2, rootMargin: "-20% 0px -20% 0px" }
     );
     io.observe(canvas);
 

@@ -1,5 +1,5 @@
 import FieldBackground, { type FieldEnv } from "./FieldBackground";
-import { BLUE, ACCENT, GLOW, hash } from "../lib/ascii";
+import { BLUE, ACCENT, GLOW, hash, shimmer, breathe } from "../lib/ascii";
 
 type Props = { className?: string; dark?: boolean };
 
@@ -12,7 +12,7 @@ function drawIdentity({ t, cols, rows, paint, dot }: FieldEnv) {
   for (let L = 0; L < lanes; L++) {
     const midY = Math.round(rows * ((L + 0.5) / lanes));
     for (let cx = 0; cx < cols; cx++) {
-      const flow = 0.5 + 0.5 * Math.sin(cx * 0.4 - t * 3 + L * 1.3);
+      const flow = shimmer(t, cx, midY);
       dot(cx, midY, 0.85, GLOW, 0.4 + 0.35 * flow);
     }
     const K = 6;
@@ -67,11 +67,11 @@ function drawLstm({ t, cols, rows, dot }: FieldEnv) {
   for (let L = 0; L < lanes; L++) {
     const y = Math.round(rows * ((L + 0.5) / lanes));
     for (let cx = 0; cx < cols; cx++) {
-      const flow = 0.5 + 0.5 * Math.sin(cx * 0.3 - t * 2.2 + L);
+      const flow = shimmer(t, cx, y);
       dot(cx, y - 2, 0.7 + 0.3 * flow, ACCENT, 0.45);
     }
     for (let cx = 8; cx < cols; cx += 8) {
-      const open = 0.5 + 0.5 * Math.sin(t * 1.3 + cx * 0.2 + L);
+      const open = breathe(t, 0.45, cx * 0.02 + L);
       for (let dy = -1; dy <= 2; dy++) dot(cx, y + dy, open, GLOW, 0.3 + 0.45 * open);
     }
   }
@@ -88,7 +88,7 @@ function drawSpeech({ t, cols, rows, paint, dot }: FieldEnv) {
     const midY = rows * ((B + 0.5) / bands);
     const amp0 = rows * (0.5 / bands) * 0.85;
     for (let cx = 0; cx < split; cx++) {
-      const amp = (0.5 + 0.5 * Math.sin(cx * 0.5 - t * 4 + B * 2)) * Math.sin(cx * 0.13 + t + B) * amp0;
+      const amp = (0.5 + 0.5 * Math.sin(cx * 0.5 + B * 2)) * Math.sin(cx * 0.13 + B) * amp0;
       const yA = Math.round(midY + amp);
       const yB = Math.round(midY - amp);
       for (let cy = Math.min(yA, yB); cy <= Math.max(yA, yB); cy++) dot(cx, cy, 0.45, BLUE, 0.28);

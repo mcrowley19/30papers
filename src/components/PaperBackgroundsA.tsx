@@ -1,14 +1,14 @@
 import FieldBackground, { type FieldEnv } from "./FieldBackground";
-import { BLUE, ACCENT, GLOW, hash, clamp01 } from "../lib/ascii";
+import { BLUE, ACCENT, GLOW, hash, clamp01, breathe, shimmer } from "../lib/ascii";
 
 type Props = { className?: string; dark?: boolean };
 
 /* 6. MDL Tutorial: data points scattered around a model curve that threads
    through them (the model is the short description that compresses the data). */
-function drawMDL({ t, cols, rows, paint, dot }: FieldEnv) {
+function drawMDL({ cols, rows, paint, dot }: FieldEnv) {
   const mid = rows * 0.5;
   const amp = rows * 0.26;
-  const yOf = (u: number) => mid + amp * Math.sin(u * 3.1 + t * 0.25) * Math.cos(u * 1.7);
+  const yOf = (u: number) => mid + amp * Math.sin(u * 3.1) * Math.cos(u * 1.7);
   for (let cx = 0; cx < cols; cx++) {
     const cy = Math.round(yOf(cx / cols));
     dot(cx, cy, 0.95, ACCENT, 0.75);
@@ -41,7 +41,7 @@ function drawMSI({ t, cols, rows, paint, dot }: FieldEnv) {
       const r = Math.hypot(cx - cxr, cy - cyr);
       if (r < 2 || r % 3.2 > 0.9) continue;
       const lit = r < reach;
-      const wave = 0.5 + 0.5 * Math.sin(r * 0.5 - t * 1.5);
+      const wave = shimmer(t, cx, cy);
       dot(cx, cy, lit ? 0.9 : 0.4, lit ? ACCENT : BLUE, (lit ? 0.6 : 0.28) * (0.6 + 0.4 * wave));
     }
   }
@@ -53,7 +53,7 @@ function drawMSI({ t, cols, rows, paint, dot }: FieldEnv) {
 function drawConv({ t, cols, rows, paint, dot }: FieldEnv) {
   for (let cy = 0; cy < rows; cy++) {
     for (let cx = 0; cx < cols; cx++) {
-      const val = 0.5 + 0.35 * Math.sin(cx * 0.3) * Math.cos(cy * 0.25) + 0.2 * Math.sin((cx + cy) * 0.2 + t * 0.2);
+      const val = 0.5 + 0.35 * Math.sin(cx * 0.3) * Math.cos(cy * 0.25);
       dot(cx, cy, clamp01(val), BLUE, 0.33);
     }
   }
@@ -73,7 +73,7 @@ function drawAlexNet({ t, cols, rows, dot }: FieldEnv) {
     const xc = Math.floor(((L + 0.5) / nLayers) * cols);
     const w = Math.max(2, Math.floor((cols / nLayers) * 0.42));
     const density = L === 0 ? 0.85 : 0.5 - L * 0.06;
-    const flow = 0.5 + 0.5 * Math.sin(t * 1.2 - L * 0.9);
+    const flow = breathe(t, 0.35, L * 0.9);
     for (let cy = 0; cy < rows; cy++) {
       for (let dx = -w; dx <= w; dx++) {
         const cx = xc + dx;
@@ -96,7 +96,7 @@ function drawResNet({ t, cols, rows, paint, dot }: FieldEnv) {
   for (let L = 0; L < lanes; L++) {
     const midY = Math.round(rows * ((L + 0.5) / lanes));
     for (let cx = 0; cx < cols; cx++) {
-      const pulse = 0.5 + 0.5 * Math.sin(cx * 0.3 - t * 2 + L);
+      const pulse = shimmer(t, cx, midY);
       dot(cx, midY, 0.5 + 0.4 * pulse, BLUE, 0.45);
     }
     const K = 6;
@@ -123,7 +123,7 @@ function drawDilated({ t, cols, rows, dot }: FieldEnv) {
       const cy = cyr + gy * dil;
       if (cx < 0 || cx >= cols || cy < 0 || cy >= rows) continue;
       const center = gx === 0 && gy === 0;
-      const pulse = 0.5 + 0.5 * Math.sin((Math.abs(gx) + Math.abs(gy)) * 0.6 - t * 2);
+      const pulse = breathe(t, 0.35, Math.abs(gx) + Math.abs(gy));
       dot(cx, cy, center ? 1 : 0.7, center ? GLOW : ACCENT, (center ? 0.9 : 0.5) * (0.5 + 0.5 * pulse));
     }
   }

@@ -116,7 +116,7 @@ export default function KolmogorovBackground({
     }
 
     let raf = 0;
-    let running = true;
+    let running = false;
     let lastT = 0;
     const speed = cell * 2.4; // px per second (~2.4 generations/sec)
 
@@ -135,7 +135,6 @@ export default function KolmogorovBackground({
 
     resize();
     if (reduce) render();
-    else raf = requestAnimationFrame(loop);
 
     const ro = new ResizeObserver(() => {
       resize();
@@ -154,7 +153,7 @@ export default function KolmogorovBackground({
           cancelAnimationFrame(raf);
         }
       },
-      { threshold: 0 }
+      { threshold: 0.2, rootMargin: "-20% 0px -20% 0px" }
     );
     io.observe(canvas);
 

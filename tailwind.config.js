@@ -55,10 +55,20 @@ export default {
           "0%": { opacity: "0", transform: "translateX(24px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
+        "focus-in": {
+          "0%": { opacity: "0", transform: "scale(0.94)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        "slide-up-center": {
+          "0%": { opacity: "0", transform: "translate(-50%, 16px)" },
+          "100%": { opacity: "1", transform: "translate(-50%, 0)" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "panel-in": "panel-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "focus-in": "focus-in 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "slide-up-center": "slide-up-center 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards",
       },
     },
   },

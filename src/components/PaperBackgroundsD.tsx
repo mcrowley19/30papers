@@ -1,5 +1,5 @@
 import FieldBackground, { type FieldEnv } from "./FieldBackground";
-import { BLUE, ACCENT, GLOW, hash } from "../lib/ascii";
+import { BLUE, ACCENT, GLOW, hash, shimmer } from "../lib/ascii";
 
 type Props = { className?: string; dark?: boolean };
 
@@ -14,10 +14,10 @@ function drawNMT({ t, cols, rows, dot }: FieldEnv) {
     for (let ix = 0; ix <= W; ix++) {
       const u = ix / W;
       const v = iy / H;
-      const align = Math.exp(-Math.pow((v - (u + 0.06 * Math.sin(u * 6 + t))) / 0.12, 2));
+      const align = Math.exp(-Math.pow((v - (u + 0.06 * Math.sin(u * 6))) / 0.12, 2));
       if (align < 0.15) continue;
-      const shimmer = 0.6 + 0.4 * Math.sin(u * 10 - t * 3);
-      dot(gx0 + ix, gy0 + iy, align, align > 0.6 ? GLOW : ACCENT, 0.22 + 0.55 * align * shimmer);
+      const glow = shimmer(t, ix, iy);
+      dot(gx0 + ix, gy0 + iy, align, align > 0.6 ? GLOW : ACCENT, 0.22 + 0.55 * align * glow);
     }
   }
 }

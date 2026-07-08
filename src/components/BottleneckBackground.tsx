@@ -83,8 +83,8 @@ export default function BottleneckBackground({
           // Soft fade toward the band edge.
           const edge = Math.max(0, 1 - Math.abs(dy));
 
-          // A wave travelling left -> right through the bottleneck.
-          const flow = 0.5 + 0.5 * Math.sin((u * 9 - t * 1.1) * Math.PI * 2 + dy * 1.4);
+          // Soft edge shimmer — each cell flickers in place, no sweep across the band.
+          const flow = 0.5 + 0.5 * Math.sin(t * 0.4 + (cx * 7 + cy * 13) * 0.11);
 
           // Lossy reconstruction: dimmer and pocked with gaps past the waist.
           let loss = 1;
@@ -114,12 +114,11 @@ export default function BottleneckBackground({
 
     let raf = 0;
     let last = 0;
-    let running = true;
+    let running = false;
 
     function loop(tms: number) {
       if (!running) return;
-      if (tms - last >= 33) {
-        // ~30fps
+      if (tms - last >= 50) {
         frame(tms);
         last = tms;
       }
@@ -127,11 +126,7 @@ export default function BottleneckBackground({
     }
 
     resize();
-    if (reduce) {
-      frame(0);
-    } else {
-      raf = requestAnimationFrame(loop);
-    }
+    if (reduce) frame(0);
 
     const ro = new ResizeObserver(() => {
       resize();
@@ -139,7 +134,6 @@ export default function BottleneckBackground({
     });
     ro.observe(canvas);
 
-    // Only animate while the section is on screen.
     const io = new IntersectionObserver(
       ([entry]) => {
         if (reduce) return;
@@ -151,7 +145,7 @@ export default function BottleneckBackground({
           cancelAnimationFrame(raf);
         }
       },
-      { threshold: 0 }
+      { threshold: 0.2, rootMargin: "-20% 0px -20% 0px" }
     );
     io.observe(canvas);
 
