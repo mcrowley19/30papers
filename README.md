@@ -1,12 +1,12 @@
 # 30 papers
 
-**[30papers.com](https://30papers.com)** — The **rumoured** collection of papers that Ilya Sutskever provided to John Carmack which reportedly contains 
+**[30papers.com](https://30papers.com)** — The **rumoured** collection of papers that Ilya Sutskever provided to John Carmack and claims contains 90% of what you need to know to understand modern Deep Learning.
 
 This is a website designed for people who are completely, or almost completely, new to reading research papers. It contains summaries for each paper, highlighted keywords with predefined definitions and buttons to ask ChatGPT or Claude about any concepts that you are struggling with.
 
 ## Contribution
 
-Despite how nice the UI looks (If I do say so myself), I am an undergrad student without any formal ML education and so some of the summaries or keywords may be incorrect. 
+I am an undergrad student without any formal ML education and so some of the summaries or keywords may be incorrect. 
 
 In additition, even though I have read the vast majority of the papers featured on the website, I have not read through each of the website's versions end to end. As a result there may be slight formatting mistakes.
 
